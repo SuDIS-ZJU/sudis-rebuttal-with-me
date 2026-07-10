@@ -26,6 +26,8 @@ ARTIFACT_TEMPLATES = {
     "PASTE_READY.txt": "",
     "REVISION_PLAN.md": "# Revision Plan\n\nMap every paper-edit promise to an issue ID and commitment status.\n",
     "FOLLOWUP_LOG.md": "# Follow-up Log\n\nAppend new comments, delta replies, and approval records.\n",
+    "ARR_THREAD_PLAN.md": "# ARR Thread Plan\n\nTrack response number, timestamp, new information, issues addressed, and stop condition per reviewer thread.\n",
+    "ARR_ISSUE_REPORT.md": "# ARR Issue Report\n\nKeep any official ARR review-issue report separate from the scientific response.\n",
 }
 
 
@@ -39,10 +41,15 @@ DEFAULT_STATE: dict[str, Any] = {
         "track": "",
         "rules_url": "",
         "rules_fetched_at": "",
+        "profile": "",
+        "response_mode": "",
+        "limit_status": "unknown",
+        "limit_source": "",
         "limit_unit": "",
         "limit_value": None,
         "links_allowed": False,
         "new_results_policy": "unknown",
+        "arr": {"thread_response_counts": {}},
     },
     "deadlines": {},
     "reviewers": [],
@@ -118,6 +125,47 @@ def _venue_rules_errors(state: dict[str, Any]) -> list[str]:
     return errors
 
 
+def _arr_profile_errors(state: dict[str, Any]) -> list[str]:
+    venue = state.get("venue") or {}
+    if venue.get("profile") != "arr":
+        return []
+    errors: list[str] = []
+    if venue.get("response_mode") != "text_only":
+        errors.append("ARR response mode must be text_only")
+    if venue.get("links_allowed") is not False:
+        errors.append("ARR responses must disallow external links")
+    if venue.get("new_results_policy") != "direct_minor_add_on_only":
+        errors.append("ARR new-results policy must be direct_minor_add_on_only")
+    limit_status = venue.get("limit_status")
+    if limit_status not in {"verified_numeric", "officially_unspecified"}:
+        errors.append("ARR limit status must be verified_numeric or officially_unspecified")
+    if limit_status == "verified_numeric" and (
+        venue.get("limit_unit") not in {"chars", "words"}
+        or not isinstance(venue.get("limit_value"), int)
+        or venue.get("limit_value") <= 0
+    ):
+        errors.append("ARR verified numeric limit requires a positive limit_unit and limit_value")
+    return errors
+
+
+def _arr_evidence_errors(state: dict[str, Any]) -> list[str]:
+    if (state.get("venue") or {}).get("profile") != "arr":
+        return []
+    errors: list[str] = []
+    allowed = {"paper", "direct_minor_add_on", "author_confirmed_clarification"}
+    blocked = {"unsolicited_new", "major_post_submission"}
+    for evidence in state.get("evidence", []):
+        if not isinstance(evidence, dict):
+            continue
+        evidence_id = evidence.get("id", "<unnamed evidence>")
+        origin = evidence.get("origin")
+        if origin in blocked:
+            errors.append(f"unsolicited or substantial new results are not allowed in ARR: {evidence_id}")
+        elif origin not in allowed:
+            errors.append(f"ARR evidence origin is missing or invalid: {evidence_id}")
+    return errors
+
+
 def _issue_errors(state: dict[str, Any]) -> list[str]:
     reviewers = state.get("reviewers") or []
     issues = state.get("issues") or []
@@ -175,7 +223,9 @@ def _text_errors(path: Path, venue: dict[str, Any], label: str) -> list[str]:
 def _draft_errors(case_dir: Path, state: dict[str, Any]) -> list[str]:
     errors: list[str] = []
     errors.extend(_venue_rules_errors(state))
+    errors.extend(_arr_profile_errors(state))
     errors.extend(_issue_errors(state))
+    errors.extend(_arr_evidence_errors(state))
     if (state.get("approvals") or {}).get("strategy") != "approved":
         errors.append("strategy approval is required before drafting")
     if not (Path(case_dir) / "DRAFT.md").exists():
@@ -212,6 +262,7 @@ def validate_case(case_dir: Path, gate: str) -> list[str]:
         return [f"unknown gate: {gate}"]
     if gate == "strategy":
         errors.extend(_venue_rules_errors(state))
+        errors.extend(_arr_profile_errors(state))
         errors.extend(_issue_errors(state))
         return errors
     errors.extend(_draft_errors(Path(case_dir), state))

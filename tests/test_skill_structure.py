@@ -7,6 +7,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).parents[1]
 SKILL = ROOT / "skills" / "sudis-rebuttal-with-me"
+ARR_SKILL = ROOT / "skills" / "sudis-arr-rebuttal-with-me"
 
 
 class SkillStructureTests(unittest.TestCase):
@@ -58,6 +59,14 @@ class SkillStructureTests(unittest.TestCase):
         ).stdout
         self.assertNotIn("successful samples/", tracked)
         self.assertNotIn("experiments blog/", tracked)
+
+    def test_arr_overlay_is_independently_triggerable_and_incremental(self):
+        text = (ARR_SKILL / "SKILL.md").read_text(encoding="utf-8")
+        self.assertTrue(text.startswith("---\nname: sudis-arr-rebuttal-with-me\n"))
+        self.assertIn("sudis-rebuttal-with-me", text)
+        self.assertIn("arr-rules-and-workflow.md", text)
+        self.assertIn("arr-case-patterns.md", text)
+        self.assertTrue((ARR_SKILL / "agents" / "openai.yaml").exists())
 
 
 if __name__ == "__main__":

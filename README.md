@@ -1,6 +1,8 @@
 # SUDIS Rebuttal With Me
 
-`sudis-rebuttal-with-me` is a research-group skill for preparing safe, evidence-grounded rebuttals and follow-ups for ARR, ACL, EMNLP, ICML, NeurIPS, ICLR, KDD, WWW, AAAI, CVPR, and similar venues.
+`sudis-rebuttal-with-me` is a research-group skill for preparing safe, evidence-grounded rebuttals and follow-ups for ARR, ACL, EMNLP, ICML, NeurIPS, ICLR, KDD, WWW, AAAI, CVPR, and similar venues. `sudis-arr-rebuttal-with-me` is the first incremental venue overlay, specialized for ACL Rolling Review.
+
+Copyright © 2026 SuDIS, Huan Li, and contributors. See [NOTICE](NOTICE) and [LICENSE](LICENSE).
 
 It supports three stages:
 
@@ -23,7 +25,7 @@ bash scripts/install.sh --dry-run
 bash scripts/install.sh
 ```
 
-The installer links the skill into `~/.agents/skills/` as the source of truth, plus `~/.codex/skills/`, `~/.Codex/skills/`, and `~/.claude/skills/`. It never replaces a real file or directory.
+The installer links both the general skill and the ARR overlay into `~/.agents/skills/` as the source of truth, plus `~/.codex/skills/`, `~/.Codex/skills/`, and `~/.claude/skills/`. It never replaces a real file or directory.
 
 To remove only the links created by this installer:
 
@@ -31,7 +33,7 @@ To remove only the links created by this installer:
 bash scripts/install.sh --uninstall
 ```
 
-The release page also provides a directly downloadable `.skill` archive: [Download v0.1.0](https://github.com/SuDIS-ZJU/sudis-rebuttal-with-me/releases/tag/v0.1.0). If your client supports importing `.skill` archives, import `sudis-rebuttal-with-me.skill`; otherwise clone the repository and run the installer.
+The release page provides directly downloadable packages: [Download v0.2.0](https://github.com/SuDIS-ZJU/sudis-rebuttal-with-me/releases/tag/v0.2.0). Import both `sudis-rebuttal-with-me.skill` and `sudis-arr-rebuttal-with-me.skill` when using the independent ARR entry. The ARR overlay depends on the general skill.
 
 ## First use
 
@@ -40,6 +42,14 @@ Invoke the skill explicitly:
 ```text
 $sudis-rebuttal-with-me
 ```
+
+For an ARR case, use the specialized incremental entry:
+
+```text
+$sudis-arr-rebuttal-with-me
+```
+
+The ARR entry first applies the general workflow, then adds current ARR rules, ARR issue-report handling, discussion-budget planning, and ARR-specific sample patterns. Future venue overlays will follow the same design.
 
 Then provide the case inputs:
 
@@ -54,6 +64,8 @@ Confirmed evidence: completed experiments, tables, citations, and approved commi
 Advisor policy: what requires mentor approval
 Output requested: analysis, strategy, draft, or follow-up
 ```
+
+For ARR, also provide the cycle email or OpenReview form if it specifies a response limit, the current response count per reviewer thread, and whether this is a resubmission.
 
 If the paper, reviews, venue rules, timeline, or evidence are missing, the skill performs triage only. It will not produce a final acceptance probability or paste-ready response from incomplete inputs.
 
@@ -74,9 +86,13 @@ DRAFT.md
 PASTE_READY.md
 REVISION_PLAN.md
 FOLLOWUP_LOG.md
+ARR_THREAD_PLAN.md
+ARR_ISSUE_REPORT.md
 ```
 
 The current official venue rules are recorded with URL and fetch date. This matters because limits, links, new-result policies, discussion windows, and issue-report mechanisms change by venue and cycle.
+
+For ARR, record `venue.profile = "arr"`. The overlay requires text-only mode, links disabled, direct minor add-ons only, and an explicit limit status. It does not guess a permanent ARR character limit when the current cycle does not state one.
 
 Initialize a case manually when useful:
 
@@ -157,6 +173,15 @@ Record every new event verbatim in `FOLLOWUP_LOG.md` and write only a delta resp
 
 Silence is not evidence of misconduct. Do not send repeated reminders, pressure reviewers about scores, or speculate about intent.
 
+### ARR-specific workflow tips
+
+- Treat ARR as a review platform, not as the final accept/reject venue.
+- Keep the first author response focused on factual corrections and the most decision-relevant issues.
+- Track at most two useful author responses per reviewer thread as a planning budget. A second response must add new information.
+- Use only direct minor add-on experiments. Do not include unsolicited new models or substantial post-submission work.
+- Keep `ARR_ISSUE_REPORT.md` separate from the scientific response and use the official issue type when applicable.
+- After the meta-review, compare commitment, revise-and-resubmit, same-reviewer, new-reviewer, and direct-submission options separately.
+
 ## Practical tips
 
 - Paste the raw review text exactly before summarizing it.
@@ -187,4 +212,4 @@ See [`AGENTS.md`](AGENTS.md) before changing the workflow, checker, references, 
 
 Do not commit raw papers, raw reviews, reviewer identities, private correspondence, or identifiable unpublished case data. The repository contains only anonymized patterns and workflow guidance.
 
-Licensed under Apache-2.0. See [`LICENSE`](LICENSE).
+Licensed under Apache-2.0. See [`LICENSE`](LICENSE). Third-party ARR rules and public advice remain the property of their respective authors and organizations; this repository distributes only original summaries and links.

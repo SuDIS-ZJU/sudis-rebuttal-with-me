@@ -8,10 +8,17 @@
     "track": "",
     "rules_url": "",
     "rules_fetched_at": "",
+    "profile": "",
+    "response_mode": "",
+    "limit_status": "unknown",
+    "limit_source": "",
     "limit_unit": "",
     "limit_value": null,
     "links_allowed": false,
-    "new_results_policy": "unknown"
+    "new_results_policy": "unknown",
+    "arr": {
+      "thread_response_counts": {}
+    }
   },
   "deadlines": {},
   "reviewers": [],

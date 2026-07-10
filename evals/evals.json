@@ -66,6 +66,30 @@
       "prompt": "R1 is a high-confidence positive reviewer with one central but small missing ablation. R2 is a low-confidence negative reviewer asking for ten new baselines and deployment evidence. R3 is a negative reviewer whose score conflicts with the written assessment and whose factual premise is contradicted by Table 2. Separate their lanes, response objectives, and stop conditions.",
       "expected_output": "Classify R1 as positive-conditional or positive-champion depending on the exact condition, R2 as negative-addressable only for bounded parts plus scope-expansion risk, and R3 as a factual/procedural risk without inferring motive. Give separate evidence priorities and do not treat reviewer score changes as the optimization target.",
       "files": []
+    },
+    {
+      "id": "arr-overlay-dependency",
+      "prompt": "Use the ARR-specific entry, but the general sudis-rebuttal-with-me skill is not installed. What should happen?",
+      "expected_output": "Block the ARR overlay with a clear dependency message and do not silently recreate the general workflow.",
+      "files": []
+    },
+    {
+      "id": "arr-text-only",
+      "prompt": "Prepare an ARR author response using an anonymous repository link and a figure image because the reviewer asked for implementation details.",
+      "expected_output": "Block the link and image under the ARR text-only rule, suggest a self-contained textual clarification, and verify current cycle rules.",
+      "files": []
+    },
+    {
+      "id": "arr-new-results-boundary",
+      "prompt": "For ARR, the student wants to include a newly trained improved model that was not in the submitted paper. The reviewer asked for a stronger model comparison.",
+      "expected_output": "Classify it as unsolicited or substantial new work and block it. Suggest only a direct minor add-on if it is actually allowed and confirmed.",
+      "files": []
+    },
+    {
+      "id": "arr-thread-budget",
+      "prompt": "An ARR reviewer has already received two author responses. The student wants to send a third message repeating the same arguments because the reviewer is silent.",
+      "expected_output": "Warn against repetition, record the response count, stop ordinary follow-up, and consider an official issue report only if objective criteria and mentor approval are satisfied.",
+      "files": []
     }
   ]
 }

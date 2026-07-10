@@ -24,6 +24,8 @@ class CaseToolTests(unittest.TestCase):
             self.assertTrue((case_dir / "CASE_STATE.json").exists())
             self.assertTrue((case_dir / "ISSUE_BOARD.md").exists())
             self.assertTrue((case_dir / "REVIEWER_LANES.md").exists())
+            self.assertTrue((case_dir / "ARR_THREAD_PLAN.md").exists())
+            self.assertTrue((case_dir / "ARR_ISSUE_REPORT.md").exists())
             self.assertTrue((case_dir / "EVIDENCE_LEDGER.md").exists())
             state = json.loads((case_dir / "CASE_STATE.json").read_text())
             self.assertEqual(state["schema_version"], "1.0")
@@ -37,6 +39,45 @@ class CaseToolTests(unittest.TestCase):
 
             self.assertIn("official rules snapshot is missing", " ".join(errors))
             self.assertIn("no atomic reviewer issues are tracked", " ".join(errors))
+
+    def test_arr_strategy_gate_requires_current_profile_rules(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            case_dir = Path(tmp) / "case"
+            initialize_case(case_dir)
+            state_path = case_dir / "CASE_STATE.json"
+            state = json.loads(state_path.read_text())
+            state["venue"].update({"profile": "arr", "rules_url": "https://aclrollingreview.org/authors", "rules_fetched_at": "2026-07-10"})
+            state["reviewers"] = [{"id": "R1", "lane": "positive-champion", "support": "high", "persuadability": "medium", "decision_relevance": "high", "addressability": "existing_evidence"}]
+            state["issues"] = [{"id": "R1-C1", "reviewer_id": "R1", "status": "open", "stance_signal": "positive"}]
+            state_path.write_text(json.dumps(state, ensure_ascii=False, indent=2))
+            errors = validate_case(case_dir, "strategy")
+            joined = " ".join(errors)
+            self.assertIn("ARR response mode", joined)
+            self.assertIn("ARR limit status", joined)
+
+    def test_arr_paste_ready_blocks_unsolicited_new_results(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            case_dir = Path(tmp) / "case"
+            initialize_case(case_dir)
+            state_path = case_dir / "CASE_STATE.json"
+            state = json.loads(state_path.read_text())
+            state.update({
+                "venue": {
+                    "name": "ARR", "profile": "arr", "rules_url": "https://aclrollingreview.org/authors",
+                    "rules_fetched_at": "2026-07-10", "response_mode": "text_only",
+                    "limit_status": "officially_unspecified", "links_allowed": False,
+                    "new_results_policy": "direct_minor_add_on_only",
+                },
+                "reviewers": [{"id": "R1", "lane": "negative-addressable", "support": "low", "persuadability": "high", "decision_relevance": "high", "addressability": "small_add_on"}],
+                "issues": [{"id": "R1-C1", "reviewer_id": "R1", "status": "answered", "stance_signal": "negative", "evidence_ids": ["E1"], "commitment_ids": []}],
+                "evidence": [{"id": "E1", "status": "author_confirmed", "origin": "unsolicited_new"}],
+                "approvals": {"strategy": "approved", "facts": "approved", "paste_ready": "approved", "escalation": "not_requested"},
+            })
+            state_path.write_text(json.dumps(state, ensure_ascii=False, indent=2))
+            (case_dir / "DRAFT.md").write_text("R1-C1: confirmed.\n")
+            (case_dir / "PASTE_READY.md").write_text("R1-C1: confirmed.\n")
+            errors = validate_case(case_dir, "paste-ready")
+            self.assertIn("unsolicited or substantial new results", " ".join(errors))
 
     def test_count_text_reports_unicode_characters_and_words(self):
         with tempfile.TemporaryDirectory() as tmp:
