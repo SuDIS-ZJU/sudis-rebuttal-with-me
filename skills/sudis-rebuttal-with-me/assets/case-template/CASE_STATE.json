@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0",
+  "case_id": "",
+  "stage": "intake",
+  "venue": {
+    "name": "",
+    "cycle": "",
+    "track": "",
+    "rules_url": "",
+    "rules_fetched_at": "",
+    "limit_unit": "",
+    "limit_value": null,
+    "links_allowed": false,
+    "new_results_policy": "unknown"
+  },
+  "deadlines": {},
+  "reviewers": [],
+  "issues": [],
+  "evidence": [],
+  "commitments": [],
+  "approvals": {
+    "strategy": "pending",
+    "facts": "pending",
+    "paste_ready": "pending",
+    "escalation": "not_requested"
+  }
+}
