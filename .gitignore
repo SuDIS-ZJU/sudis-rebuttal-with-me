@@ -1,0 +1,9 @@
+.DS_Store
+.worktrees/
+experiments blog/
+other researcher's skills/
+successful samples/
+__pycache__/
+.pytest_cache/
+*.pyc
+eval-workspace/
