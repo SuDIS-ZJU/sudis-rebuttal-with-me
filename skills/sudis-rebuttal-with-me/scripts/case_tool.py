@@ -28,6 +28,8 @@ ARTIFACT_TEMPLATES = {
     "FOLLOWUP_LOG.md": "# Follow-up Log\n\nAppend new comments, delta replies, and approval records.\n",
     "ARR_THREAD_PLAN.md": "# ARR Thread Plan\n\nTrack response number, timestamp, new information, issues addressed, and stop condition per reviewer thread.\n",
     "ARR_ISSUE_REPORT.md": "# ARR Issue Report\n\nKeep any official ARR review-issue report separate from the scientific response.\n",
+    "AC_SUMMARY.md": "# AC Summary\n\nSummarize the paper contribution, review record, author response, unresolved points, and requested handling.\n",
+    "AC_MESSAGE.md": "# AC Message\n\nKeep chair-facing text separate from the scientific response and issue report.\n",
 }
 
 

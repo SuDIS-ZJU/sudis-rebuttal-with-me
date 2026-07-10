@@ -25,6 +25,7 @@ class SkillStructureTests(unittest.TestCase):
             "drafting-safe-rebuttals.md",
             "openreview-markdown.md",
             "followup-and-escalation.md",
+            "ac-summary-and-letter.md",
             "anonymized-case-patterns.md",
         }
         actual = {p.name for p in (SKILL / "references").glob("*.md")}

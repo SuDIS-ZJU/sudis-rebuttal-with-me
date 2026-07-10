@@ -30,18 +30,20 @@ Determine the requested stage before reading large references:
 | Initial analysis, probability, experiment priority | `references/intake-and-venue-rules.md`, `references/strategy-and-reviewer-modeling.md`, `references/evidence-and-experiment-priorities.md` | `CASE_STATE.json`, `RULES_SNAPSHOT.md`, `ISSUE_BOARD.md`, `STRATEGY.md`, with separate positive and negative reviewer lanes |
 | English author response | `references/drafting-safe-rebuttals.md`, `references/openreview-markdown.md`, and the approved `STRATEGY.md` | `DRAFT.md`, then canonical `PASTE_READY.md` only after gates pass |
 | New reviewer comment or discussion | `references/followup-and-escalation.md` and the existing case state | `FOLLOWUP_LOG.md`, delta reply, updated `REVISION_PLAN.md` |
+| AC/SAC/PC session summary or letter | `references/followup-and-escalation.md`, `references/ac-summary-and-letter.md`, and the case ledger | `AC_SUMMARY.md`, `AC_MESSAGE.md`, or a mentor-gated issue report |
 | Incomplete or urgent triage | Read only the intake reference | Missing-input list and blocked actions |
 
 Use `quick` mode only for triage. Do not provide a final probability, final strategy, or paste-ready text in quick mode.
 
-## Phase 0: intake and case state
+## Phase 0: progressive intake
 
-1. Locate the paper source, all raw reviews, reviewer metadata, existing author responses, venue/cycle, deadline, response mode, and author-confirmed results.
-2. Create or resume a structured case directory with `python <skill-root>/scripts/case_tool.py init --case-dir <path>`. Complete `REVIEWER_LANES.md` before strategy approval; keep reviewer-level lane separate from each issue's `stance_signal`.
-3. Preserve raw review text verbatim outside the generated summaries. Assign stable reviewer and issue IDs.
-4. Fetch the current official venue rule page when network access is available. Store URL, fetch date, relevant rule excerpts, character or word limit, links policy, new-result policy, revision policy, discussion windows, issue-report mechanism, and intended readers.
-5. If a rule is user-provided, label it `user_provided` and do not silently merge it with remembered rules.
-6. If the paper, reviews, venue rules, or evidence are missing, produce a triage report only and list the exact blocker.
+Start with only the paper PDF and raw OpenReview review text. Ask whether the student already has a raw response, confirmed new results, a venue rule snapshot, and a timeline. Do not demand every metadata field before reading the material.
+
+1. Create or resume a case directory with `python <skill-root>/scripts/case_tool.py init --case-dir <path>`.
+2. Preserve raw review text verbatim and assign stable reviewer and issue IDs.
+3. After reading the PDF and reviews, return a short triage plus a missing-input checklist. Ask only for information that changes the next decision: venue/cycle, deadline, official rules, author response, evidence status, or mentor policy.
+4. Fetch current official rules when a final draft or escalation is requested. Record URL, fetch date, limits, links, new-results policy, discussion window, issue mechanism, and intended readers.
+5. If a rule is user-provided, label it `user_provided`. Missing rules or evidence allow triage, not final probability or paste-ready text.
 
 ## Phase 1: analyze and plan
 
@@ -85,9 +87,11 @@ python <skill-root>/scripts/case_tool.py check --case-dir <path> --gate paste-re
 
 If either gate fails, show the blocking errors and ask only for the missing evidence or approval. Do not fill the gap with plausible wording.
 
-## Phase 3: follow-up and escalation
+## Phase 3: follow-up, AC summary, and escalation
 
 Load `references/followup-and-escalation.md`. Append every new event verbatim to `FOLLOWUP_LOG.md`, link it to existing issues when possible, and write a delta response only.
+
+For AC/SAC/PC communication, also load `references/ac-summary-and-letter.md`. Build `AC_SUMMARY.md` first, then a short `AC_MESSAGE.md`. Lead with contribution, balanced reviewer evidence, resolved and unresolved points, and the smallest venue-compliant request. “Improve impression” means make the record easy to verify, not praise the authors or pressure for a score.
 
 Use the least escalatory venue-compliant channel that can resolve the problem. A reviewer-thread clarification comes before an AC note; an official issue report comes before a PC email when the venue provides one. A generic reminder is not a substitute for evidence. Never repeat reminders merely because a reviewer is silent.
 
@@ -106,6 +110,8 @@ At the end of a completed stage, report:
 3. The current outlook and its confidence label, if the intake gate passed.
 4. Evidence and commitments still requiring author or mentor confirmation.
 5. Exact files created and the next safe action.
+
+For chair-facing work, also report whether `AC_SUMMARY.md` is internal-only, whether `AC_MESSAGE.md` is mentor-approved, and whether any procedural request remains separate in `ARR_ISSUE_REPORT.md`.
 
 Never label a document ready to submit when a checker gate or human approval is incomplete.
 

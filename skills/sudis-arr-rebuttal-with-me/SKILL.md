@@ -20,7 +20,7 @@ Never turn a historical sample or advice article into a current venue rule.
 
 ## ARR-specific intake
 
-Before strategy, collect the ARR cycle, paper type, OpenReview forum, current phase, exact deadline and timezone, raw reviews, current response count per thread, rule snapshot, and whether the paper is a resubmission. Record `venue.profile = "arr"` in `CASE_STATE.json`.
+Start with the paper PDF and raw OpenReview review text. Ask whether the student already has a raw response, confirmed add-on results, current response counts, a cycle email, and a deadline. Fill the rest interactively. Record `venue.profile = "arr"` in `CASE_STATE.json`.
 
 The ARR rule snapshot must record:
 
@@ -85,6 +85,10 @@ Do not ask a reviewer to raise a score. Do not repeatedly remind a silent review
 ### 4. After the meta-review
 
 Help the authors compare mutually exclusive next steps: commit to a downstream venue, revise and resubmit to ARR, request the same or new reviewers, or submit directly elsewhere. State what is known about ARR and what remains a downstream venue decision.
+
+### 5. AC summary and chair-facing message
+
+Load the general skill's `references/ac-summary-and-letter.md`. Create `AC_SUMMARY.md` first, then `AC_MESSAGE.md` only after mentor approval. Follow the sample pattern: contribution, recognized strengths, main concerns, response evidence, discussion outcome, unresolved boundary, and one narrow request. Do not ask the AC to raise scores or accept the paper.
 
 ## Deterministic checks
 

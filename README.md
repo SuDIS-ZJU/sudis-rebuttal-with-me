@@ -33,7 +33,7 @@ To remove only the links created by this installer:
 bash scripts/install.sh --uninstall
 ```
 
-The release page provides directly downloadable packages: [Download v0.2.0](https://github.com/SuDIS-ZJU/sudis-rebuttal-with-me/releases/tag/v0.2.0). Import both `sudis-rebuttal-with-me.skill` and `sudis-arr-rebuttal-with-me.skill` when using the independent ARR entry. The ARR overlay depends on the general skill.
+The release page provides directly downloadable packages: [Download v0.2.1](https://github.com/SuDIS-ZJU/sudis-rebuttal-with-me/releases/tag/v0.2.1). Import both `sudis-rebuttal-with-me.skill` and `sudis-arr-rebuttal-with-me.skill` when using the independent ARR entry. The ARR overlay depends on the general skill.
 
 ## First use
 
@@ -88,6 +88,8 @@ REVISION_PLAN.md
 FOLLOWUP_LOG.md
 ARR_THREAD_PLAN.md
 ARR_ISSUE_REPORT.md
+AC_SUMMARY.md
+AC_MESSAGE.md
 ```
 
 The current official venue rules are recorded with URL and fetch date. This matters because limits, links, new-result policies, discussion windows, and issue-report mechanisms change by venue and cycle.

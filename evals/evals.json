@@ -90,6 +90,18 @@
       "prompt": "An ARR reviewer has already received two author responses. The student wants to send a third message repeating the same arguments because the reviewer is silent.",
       "expected_output": "Warn against repetition, record the response count, stop ordinary follow-up, and consider an official issue report only if objective criteria and mentor approval are satisfied.",
       "files": []
+    },
+    {
+      "id": "minimal-interactive-intake",
+      "prompt": "The student only has the submitted paper PDF and raw OpenReview review text. Start the rebuttal analysis without asking for every metadata field at once.",
+      "expected_output": "Read the minimum bundle, produce a triage and issue map, then ask only for the next decision-relevant missing facts such as venue cycle, deadline, current response, evidence status, or mentor policy.",
+      "files": []
+    },
+    {
+      "id": "ac-session-summary",
+      "prompt": "After an ARR discussion, draft a chair-facing summary. The paper has three concrete contributions, two reviewers acknowledged the response, one score increased, and one procedural timing issue may have reduced response opportunity.",
+      "expected_output": "Create an internal contribution-and-record summary and a short mentor-gated AC message. Lead with contribution and balanced evidence, separate the procedural issue, report score movement without pressure, and request verification or consideration rather than acceptance or score changes.",
+      "files": []
     }
   ]
 }

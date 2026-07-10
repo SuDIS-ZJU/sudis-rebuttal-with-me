@@ -26,6 +26,8 @@ class CaseToolTests(unittest.TestCase):
             self.assertTrue((case_dir / "REVIEWER_LANES.md").exists())
             self.assertTrue((case_dir / "ARR_THREAD_PLAN.md").exists())
             self.assertTrue((case_dir / "ARR_ISSUE_REPORT.md").exists())
+            self.assertTrue((case_dir / "AC_SUMMARY.md").exists())
+            self.assertTrue((case_dir / "AC_MESSAGE.md").exists())
             self.assertTrue((case_dir / "EVIDENCE_LEDGER.md").exists())
             state = json.loads((case_dir / "CASE_STATE.json").read_text())
             self.assertEqual(state["schema_version"], "1.0")
