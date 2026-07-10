@@ -39,11 +39,11 @@ Use `quick` mode only for triage. Do not provide a final probability, final stra
 
 Start with only the paper PDF and raw OpenReview review text. Ask whether the student already has a raw response, confirmed new results, a venue rule snapshot, and a timeline. Do not demand every metadata field before reading the material.
 
-1. Create or resume a case directory with `python <skill-root>/scripts/case_tool.py init --case-dir <path>`.
+1. Create or resume a case directory with `python <skill-root>/scripts/case_tool.py init --case-dir <path>`. Use `CASE_INTAKE.md` and `REVIEWS_INPUT.md` when the student prefers a local file.
 2. Preserve raw review text verbatim and assign stable reviewer and issue IDs.
 3. After reading the PDF and reviews, return a short triage plus a missing-input checklist. Ask only for information that changes the next decision: venue/cycle, deadline, official rules, author response, evidence status, or mentor policy.
 4. Fetch current official rules when a final draft or escalation is requested. Record URL, fetch date, limits, links, new-results policy, discussion window, issue mechanism, and intended readers.
-5. If a rule is user-provided, label it `user_provided`. Missing rules or evidence allow triage, not final probability or paste-ready text.
+5. If a rule is user-provided, label it `user_provided`. Missing rules or evidence allow triage, not final probability or paste-ready text. A URL without copied raw review text is reference-only and cannot pass the strategy gate.
 
 ## Phase 1: analyze and plan
 

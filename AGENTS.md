@@ -44,6 +44,8 @@ Update `references/openreview-markdown.md` first, then update `SKILL.md` routing
 
 Future venue overlays should use `sudis-<venue>-rebuttal-with-me`, depend on the general skill, add `venue.profile`, and provide focused official-rule and anonymized-pattern references.
 
+Intake should begin with a paper PDF plus copied raw reviews or `REVIEWS_INPUT.md`. URL-only input is reference-only and must remain triage-only. Preserve `intake_mode`, `paper_status`, and `raw_review_status` in `CASE_STATE.json` when extending the intake flow.
+
 If a checker can enforce a rule deterministically, add it to `scripts/case_tool.py` and add a regression test. Do not rely on prose instructions alone for safety-critical transitions.
 
 ### Deterministic gates

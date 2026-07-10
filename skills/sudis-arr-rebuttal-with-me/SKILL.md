@@ -20,7 +20,7 @@ Never turn a historical sample or advice article into a current venue rule.
 
 ## ARR-specific intake
 
-Start with the paper PDF and raw OpenReview review text. Ask whether the student already has a raw response, confirmed add-on results, current response counts, a cycle email, and a deadline. Fill the rest interactively. Record `venue.profile = "arr"` in `CASE_STATE.json`.
+Start with the paper PDF and raw OpenReview review text, pasted directly or stored in `REVIEWS_INPUT.md`. Ask whether the student already has a raw response, confirmed add-on results, current response counts, a cycle email, and a deadline. Fill the rest interactively. An OpenReview URL alone is reference-only and remains triage-only. Record `venue.profile = "arr"` in `CASE_STATE.json`.
 
 The ARR rule snapshot must record:
 

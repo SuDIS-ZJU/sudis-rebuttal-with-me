@@ -33,7 +33,7 @@ To remove only the links created by this installer:
 bash scripts/install.sh --uninstall
 ```
 
-The release page provides directly downloadable packages: [Download v0.2.2](https://github.com/SuDIS-ZJU/sudis-rebuttal-with-me/releases/tag/v0.2.2). Import both `sudis-rebuttal-with-me.skill` and `sudis-arr-rebuttal-with-me.skill` when using the independent ARR entry. The ARR overlay depends on the general skill.
+The release page provides directly downloadable packages: [Download v0.2.3](https://github.com/SuDIS-ZJU/sudis-rebuttal-with-me/releases/tag/v0.2.3). Import both `sudis-rebuttal-with-me.skill` and `sudis-arr-rebuttal-with-me.skill` when using the independent ARR entry. The ARR overlay depends on the general skill.
 
 ## Venue-specific skill family
 
@@ -150,11 +150,15 @@ ARR_THREAD_PLAN.md
 ARR_ISSUE_REPORT.md
 AC_SUMMARY.md
 AC_MESSAGE.md
+CASE_INTAKE.md
+REVIEWS_INPUT.md
 ```
 
 The current official venue rules are recorded with URL and fetch date. This matters because limits, links, new-result policies, discussion windows, and issue-report mechanisms change by venue and cycle.
 
 For ARR, record `venue.profile = "arr"`. The overlay requires text-only mode, links disabled, direct minor add-ons only, and an explicit limit status. It does not guess a permanent ARR character limit when the current cycle does not state one.
+
+OpenReview URLs are optional references, not the preferred intake source. Copy the complete raw reviews into `REVIEWS_INPUT.md` or paste them directly into the conversation. URL-only cases are triage-only because scraping can lose comment order, visibility, timestamps, revisions, or authentication context.
 
 Initialize a case manually when useful:
 

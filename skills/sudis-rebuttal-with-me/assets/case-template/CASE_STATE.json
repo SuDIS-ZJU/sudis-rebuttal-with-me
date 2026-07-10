@@ -2,6 +2,10 @@
   "schema_version": "1.0",
   "case_id": "",
   "stage": "intake",
+  "intake_mode": "unknown",
+  "paper_status": "missing",
+  "raw_review_status": "unknown",
+  "author_response_status": "unknown",
   "venue": {
     "name": "",
     "cycle": "",

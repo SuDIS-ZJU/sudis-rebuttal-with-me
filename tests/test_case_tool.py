@@ -28,6 +28,9 @@ class CaseToolTests(unittest.TestCase):
             self.assertTrue((case_dir / "ARR_ISSUE_REPORT.md").exists())
             self.assertTrue((case_dir / "AC_SUMMARY.md").exists())
             self.assertTrue((case_dir / "AC_MESSAGE.md").exists())
+            self.assertTrue((case_dir / "CASE_INTAKE.md").exists())
+            self.assertTrue((case_dir / "REVIEWS_INPUT.md").exists())
+            self.assertIn("complete raw OpenReview", (case_dir / "REVIEWS_INPUT.md").read_text())
             self.assertTrue((case_dir / "EVIDENCE_LEDGER.md").exists())
             state = json.loads((case_dir / "CASE_STATE.json").read_text())
             self.assertEqual(state["schema_version"], "1.0")
@@ -42,6 +45,24 @@ class CaseToolTests(unittest.TestCase):
             self.assertIn("official rules snapshot is missing", " ".join(errors))
             self.assertIn("no atomic reviewer issues are tracked", " ".join(errors))
 
+    def test_url_only_intake_is_triage_only(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            case_dir = Path(tmp) / "case"
+            initialize_case(case_dir)
+            state_path = case_dir / "CASE_STATE.json"
+            state = json.loads(state_path.read_text())
+            state.update({
+                "intake_mode": "url_reference_only",
+                "paper_status": "provided",
+                "raw_review_status": "unknown",
+                "venue": {"rules_url": "https://example.org/rules", "rules_fetched_at": "2026-07-10"},
+                "reviewers": [{"id": "R1", "lane": "unknown-insufficient", "support": "unknown", "persuadability": "unknown", "decision_relevance": "unknown", "addressability": "unknown"}],
+                "issues": [{"id": "R1-C1", "reviewer_id": "R1", "status": "needs_user_input", "stance_signal": "unknown"}],
+            })
+            state_path.write_text(json.dumps(state, ensure_ascii=False, indent=2))
+            errors = validate_case(case_dir, "strategy")
+            self.assertIn("URL-only intake is triage-only", " ".join(errors))
+
     def test_arr_strategy_gate_requires_current_profile_rules(self):
         with tempfile.TemporaryDirectory() as tmp:
             case_dir = Path(tmp) / "case"
@@ -49,6 +70,7 @@ class CaseToolTests(unittest.TestCase):
             state_path = case_dir / "CASE_STATE.json"
             state = json.loads(state_path.read_text())
             state["venue"].update({"profile": "arr", "rules_url": "https://aclrollingreview.org/authors", "rules_fetched_at": "2026-07-10"})
+            state.update({"intake_mode": "local_markdown", "paper_status": "provided", "raw_review_status": "confirmed"})
             state["reviewers"] = [{"id": "R1", "lane": "positive-champion", "support": "high", "persuadability": "medium", "decision_relevance": "high", "addressability": "existing_evidence"}]
             state["issues"] = [{"id": "R1-C1", "reviewer_id": "R1", "status": "open", "stance_signal": "positive"}]
             state_path.write_text(json.dumps(state, ensure_ascii=False, indent=2))
@@ -64,6 +86,9 @@ class CaseToolTests(unittest.TestCase):
             state_path = case_dir / "CASE_STATE.json"
             state = json.loads(state_path.read_text())
             state.update({
+                "intake_mode": "local_markdown",
+                "paper_status": "provided",
+                "raw_review_status": "confirmed",
                 "venue": {
                     "name": "ARR", "profile": "arr", "rules_url": "https://aclrollingreview.org/authors",
                     "rules_fetched_at": "2026-07-10", "response_mode": "text_only",
@@ -97,6 +122,9 @@ class CaseToolTests(unittest.TestCase):
             state = json.loads(state_path.read_text())
             state.update(
                 {
+                    "intake_mode": "local_markdown",
+                    "paper_status": "provided",
+                    "raw_review_status": "confirmed",
                     "stage": "draft",
                     "venue": {
                         "name": "ARR",
@@ -145,6 +173,9 @@ class CaseToolTests(unittest.TestCase):
             state_path = case_dir / "CASE_STATE.json"
             state = json.loads(state_path.read_text())
             state.update({
+                "intake_mode": "local_markdown",
+                "paper_status": "provided",
+                "raw_review_status": "confirmed",
                 "venue": {"rules_url": "https://example.org/rules", "rules_fetched_at": "2026-07-10", "links_allowed": True},
                 "reviewers": [{"id": "R1", "lane": "positive-champion", "support": "high", "persuadability": "medium", "decision_relevance": "high", "addressability": "existing_evidence"}],
                 "issues": [{"id": "R1-C1", "reviewer_id": "R1", "status": "answered", "stance_signal": "positive", "evidence_ids": [], "commitment_ids": []}],
@@ -164,6 +195,9 @@ class CaseToolTests(unittest.TestCase):
             state = json.loads(state_path.read_text())
             state.update(
                 {
+                    "intake_mode": "local_markdown",
+                    "paper_status": "provided",
+                    "raw_review_status": "confirmed",
                     "stage": "draft",
                     "venue": {
                         "name": "ICML",
@@ -214,6 +248,9 @@ class CaseToolTests(unittest.TestCase):
             state = json.loads(state_path.read_text())
             state.update(
                 {
+                    "intake_mode": "local_markdown",
+                    "paper_status": "provided",
+                    "raw_review_status": "confirmed",
                     "venue": {
                         "rules_url": "https://example.org/rules",
                         "rules_fetched_at": "2026-07-10",

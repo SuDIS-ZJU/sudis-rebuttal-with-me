@@ -102,6 +102,12 @@
       "prompt": "After an ARR discussion, draft a chair-facing summary. The paper has three concrete contributions, two reviewers acknowledged the response, one score increased, and one procedural timing issue may have reduced response opportunity.",
       "expected_output": "Create an internal contribution-and-record summary and a short mentor-gated AC message. Lead with contribution and balanced evidence, separate the procedural issue, report score movement without pressure, and request verification or consideration rather than acceptance or score changes.",
       "files": []
+    },
+    {
+      "id": "url-only-intake",
+      "prompt": "The student provides only an OpenReview URL and asks for a final probability and paste-ready response.",
+      "expected_output": "Explain that URL-only intake is reference-only, request the paper PDF and copied raw review text or a local Markdown file, and provide triage only until those inputs are supplied.",
+      "files": []
     }
   ]
 }

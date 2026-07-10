@@ -30,6 +30,8 @@ ARTIFACT_TEMPLATES = {
     "ARR_ISSUE_REPORT.md": "# ARR Issue Report\n\nKeep any official ARR review-issue report separate from the scientific response.\n",
     "AC_SUMMARY.md": "# AC Summary\n\nSummarize the paper contribution, review record, author response, unresolved points, and requested handling.\n",
     "AC_MESSAGE.md": "# AC Message\n\nKeep chair-facing text separate from the scientific response and issue report.\n",
+    "CASE_INTAKE.md": "# Case Intake\n\n- Paper PDF: [path or attachment]\n- Venue/cycle: [optional at first turn]\n- Stage/deadline: [optional]\n- Existing raw response: none | attached | pasted\n- Confirmed new evidence: none | listed in EVIDENCE_LEDGER.md\n- Mentor constraints: [optional]\n",
+    "REVIEWS_INPUT.md": "# Reviews Input\n\nCopy complete raw OpenReview text here. Preserve reviewer IDs, scores, confidence, timestamps, visibility, author responses, and follow-ups.\n\n## Reviewer R1\n\n### Metadata\n\n- Score: [copy exactly]\n- Confidence: [copy exactly]\n- Timestamp: [if available]\n\n### Raw review\n\n[paste complete review text]\n",
 }
 
 
@@ -37,6 +39,10 @@ DEFAULT_STATE: dict[str, Any] = {
     "schema_version": "1.0",
     "case_id": "",
     "stage": "intake",
+    "intake_mode": "unknown",
+    "paper_status": "missing",
+    "raw_review_status": "unknown",
+    "author_response_status": "unknown",
     "venue": {
         "name": "",
         "cycle": "",
@@ -124,6 +130,21 @@ def _venue_rules_errors(state: dict[str, Any]) -> list[str]:
     errors: list[str] = []
     if not venue.get("rules_url") or not venue.get("rules_fetched_at"):
         errors.append("official rules snapshot is missing")
+    return errors
+
+
+def _intake_errors(state: dict[str, Any]) -> list[str]:
+    mode = state.get("intake_mode")
+    errors: list[str] = []
+    if state.get("paper_status") != "provided":
+        errors.append("paper PDF is not marked as provided")
+    if mode not in {"paste", "local_markdown"}:
+        if mode == "url_reference_only":
+            errors.append("URL-only intake is triage-only; provide pasted or local raw review text")
+        else:
+            errors.append("intake_mode must be paste or local_markdown")
+    if state.get("raw_review_status") != "confirmed":
+        errors.append("raw review text must be marked confirmed")
     return errors
 
 
@@ -224,6 +245,7 @@ def _text_errors(path: Path, venue: dict[str, Any], label: str) -> list[str]:
 
 def _draft_errors(case_dir: Path, state: dict[str, Any]) -> list[str]:
     errors: list[str] = []
+    errors.extend(_intake_errors(state))
     errors.extend(_venue_rules_errors(state))
     errors.extend(_arr_profile_errors(state))
     errors.extend(_issue_errors(state))
@@ -263,6 +285,7 @@ def validate_case(case_dir: Path, gate: str) -> list[str]:
     if gate not in {"strategy", "draft", "paste-ready", "escalation"}:
         return [f"unknown gate: {gate}"]
     if gate == "strategy":
+        errors.extend(_intake_errors(state))
         errors.extend(_venue_rules_errors(state))
         errors.extend(_arr_profile_errors(state))
         errors.extend(_issue_errors(state))
