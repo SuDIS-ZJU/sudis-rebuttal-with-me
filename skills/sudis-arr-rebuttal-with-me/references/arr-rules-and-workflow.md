@@ -9,7 +9,7 @@ This is an operational overlay for the general rebuttal skill. Verify every cycl
 | [ARR Authors Guidelines](https://aclrollingreview.org/authors) | author response, new-result policy, links, discussion, issue reports, resubmission, commitment |
 | [ARR Reviewer Guidelines](https://aclrollingreview.org/reviewerguidelines) | review quality, tone, factual errors, reviewer discussion, reviewer issue codes |
 | [ARR AC Guidelines](https://aclrollingreview.org/acguidelines) | AC visibility, non-response, chair handling, meta-review |
-| Current [ARR Dates and Venues](https://aclrollingreview.org/venues) or cycle email | deadlines and exact phase timing |
+| Current [ARR Dates and Venues](https://aclrollingreview.org/dates) or cycle email | deadlines and exact phase timing |
 
 If a page or cycle email conflicts with this file, use the current official source and record the conflict in `RULES_SNAPSHOT.md`.
 
