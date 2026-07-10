@@ -109,7 +109,7 @@ class CaseToolTests(unittest.TestCase):
             })
             state_path.write_text(json.dumps(state, ensure_ascii=False, indent=2))
             (case_dir / "DRAFT.md").write_text("R1-C1: confirmed.\n")
-            (case_dir / "PASTE_READY.txt").write_text("TODO: add the confirmed result.\n")
+            (case_dir / "PASTE_READY.md").write_text("TODO: add the confirmed result.\n")
             errors = validate_case(case_dir, "paste-ready")
             self.assertIn("unresolved placeholder", " ".join(errors))
 
@@ -154,6 +154,7 @@ class CaseToolTests(unittest.TestCase):
             state_path.write_text(json.dumps(state, ensure_ascii=False, indent=2))
             (case_dir / "DRAFT.md").write_text("R1-C1: The confirmed result is 42.\n")
             (case_dir / "PASTE_READY.txt").write_text("R1-C1: The confirmed result is 42.\n")
+            (case_dir / "PASTE_READY.md").write_text("R1-C1: The confirmed result is 42.\n")
 
             self.assertEqual(validate_case(case_dir, "draft"), [])
             state["approvals"]["paste_ready"] = "approved"
@@ -200,7 +201,7 @@ class CaseToolTests(unittest.TestCase):
             (case_dir / "DRAFT.md").write_text("R1-C1: confirmed.\n")
 
             errors = validate_case(case_dir, "paste-ready")
-            self.assertIn("PASTE_READY.txt is missing or empty", " ".join(errors))
+            self.assertIn("PASTE_READY.md is missing or empty", " ".join(errors))
 
 
 if __name__ == "__main__":

@@ -28,7 +28,7 @@ Determine the requested stage before reading large references:
 | User need | Read next | Main output |
 | --- | --- | --- |
 | Initial analysis, probability, experiment priority | `references/intake-and-venue-rules.md`, `references/strategy-and-reviewer-modeling.md`, `references/evidence-and-experiment-priorities.md` | `CASE_STATE.json`, `RULES_SNAPSHOT.md`, `ISSUE_BOARD.md`, `STRATEGY.md`, with separate positive and negative reviewer lanes |
-| English author response | `references/drafting-safe-rebuttals.md` and the approved `STRATEGY.md` | `DRAFT.md`, then `PASTE_READY.txt` only after gates pass |
+| English author response | `references/drafting-safe-rebuttals.md`, `references/openreview-markdown.md`, and the approved `STRATEGY.md` | `DRAFT.md`, then canonical `PASTE_READY.md` only after gates pass |
 | New reviewer comment or discussion | `references/followup-and-escalation.md` and the existing case state | `FOLLOWUP_LOG.md`, delta reply, updated `REVISION_PLAN.md` |
 | Incomplete or urgent triage | Read only the intake reference | Missing-input list and blocked actions |
 
@@ -72,7 +72,9 @@ Before drafting, ask the student to approve the strategy and identify which comm
 
 Load `references/drafting-safe-rebuttals.md`. Draft in English, but explain strategy and unresolved risks in Chinese unless the student requests otherwise.
 
-Keep `DRAFT.md` separate from `PASTE_READY.txt`. Every factual sentence must point to a confirmed evidence ID. Every paper-edit promise must point to an approved commitment and an item in `REVISION_PLAN.md`.
+Keep `DRAFT.md` separate from `PASTE_READY.md`. Every factual sentence must point to a confirmed evidence ID. Every paper-edit promise must point to an approved commitment and an item in `REVISION_PLAN.md`.
+
+Render the final response according to `references/openreview-markdown.md`: use question headings, `(a)/(b)/(c)` subpoints for compound questions, compact pipe tables with captions, and no raw HTML or unexplained wide tables. `PASTE_READY.md` is the canonical artifact; do not call `PASTE_READY.txt` ready unless the Markdown file also passes.
 
 Resolve `scripts/case_tool.py` relative to this skill directory, not the student's case directory. Run the deterministic checker before presenting paste-ready text:
 

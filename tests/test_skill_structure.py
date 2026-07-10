@@ -22,6 +22,7 @@ class SkillStructureTests(unittest.TestCase):
             "strategy-and-reviewer-modeling.md",
             "evidence-and-experiment-priorities.md",
             "drafting-safe-rebuttals.md",
+            "openreview-markdown.md",
             "followup-and-escalation.md",
             "anonymized-case-patterns.md",
         }

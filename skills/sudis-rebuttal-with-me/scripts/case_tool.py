@@ -22,6 +22,7 @@ ARTIFACT_TEMPLATES = {
     "EVIDENCE_LEDGER.md": "# Evidence Ledger\n\nRecord the source and confirmation status of every factual claim.\n",
     "STRATEGY.md": "# Strategy\n\nState the structured expert outlook, priorities, risks, and approval status.\n",
     "DRAFT.md": "# Draft\n\nKeep reviewer-facing text here until facts and commitments are confirmed.\n",
+    "PASTE_READY.md": "",
     "PASTE_READY.txt": "",
     "REVISION_PLAN.md": "# Revision Plan\n\nMap every paper-edit promise to an issue ID and commitment status.\n",
     "FOLLOWUP_LOG.md": "# Follow-up Log\n\nAppend new comments, delta replies, and approval records.\n",
@@ -222,7 +223,7 @@ def validate_case(case_dir: Path, gate: str) -> list[str]:
             errors.append("fact approval is required before paste-ready output")
         if approvals.get("paste_ready") != "approved":
             errors.append("paste-ready approval is required")
-        errors.extend(_text_errors(Path(case_dir) / "PASTE_READY.txt", state.get("venue") or {}, "PASTE_READY.txt"))
+        errors.extend(_text_errors(Path(case_dir) / "PASTE_READY.md", state.get("venue") or {}, "PASTE_READY.md"))
         return errors
     if approvals.get("escalation") not in {"mentor_approved", "approved"}:
         errors.append("mentor approval is required before escalation")
