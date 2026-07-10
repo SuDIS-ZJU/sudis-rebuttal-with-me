@@ -69,6 +69,13 @@ class SkillStructureTests(unittest.TestCase):
         self.assertIn("arr-case-patterns.md", text)
         self.assertTrue((ARR_SKILL / "agents" / "openai.yaml").exists())
 
+    def test_readme_documents_venue_family_and_arr_link(self):
+        text = (ROOT / "README.md").read_text(encoding="utf-8")
+        for venue in ("NeurIPS", "KDD", "WWW", "ICML", "ICLR", "CVPR"):
+            self.assertIn(venue, text)
+        self.assertIn("Coming soon", text)
+        self.assertIn("skills/sudis-arr-rebuttal-with-me/SKILL.md", text)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -33,7 +33,67 @@ To remove only the links created by this installer:
 bash scripts/install.sh --uninstall
 ```
 
-The release page provides directly downloadable packages: [Download v0.2.1](https://github.com/SuDIS-ZJU/sudis-rebuttal-with-me/releases/tag/v0.2.1). Import both `sudis-rebuttal-with-me.skill` and `sudis-arr-rebuttal-with-me.skill` when using the independent ARR entry. The ARR overlay depends on the general skill.
+The release page provides directly downloadable packages: [Download v0.2.2](https://github.com/SuDIS-ZJU/sudis-rebuttal-with-me/releases/tag/v0.2.2). Import both `sudis-rebuttal-with-me.skill` and `sudis-arr-rebuttal-with-me.skill` when using the independent ARR entry. The ARR overlay depends on the general skill.
+
+## Venue-specific skill family
+
+The family has one general skill and small venue overlays. The general skill owns the shared evidence, reviewer-lane, Markdown, approval, and escalation workflow. A venue overlay adds only current rules and venue-specific tactics.
+
+| Venue or platform | Status | Entry point | What the overlay will specialize |
+| --- | --- | --- | --- |
+| ACL Rolling Review (ARR), including ACL/EMNLP-style ARR workflows | Available | [`sudis-arr-rebuttal-with-me`](skills/sudis-arr-rebuttal-with-me/SKILL.md) | Text-only response, no external links, minor add-on boundary, discussion budget, review-issue reports, ARR resubmission and commitment |
+| NeurIPS | Coming soon | `sudis-neurips-rebuttal-with-me` | Cycle-specific response limits, reviewer/AC discussion, confidential communication and NeurIPS escalation rules |
+| ICML | Coming soon | `sudis-icml-rebuttal-with-me` | Per-review limits, AC comments, response format and current-cycle discussion rules |
+| ICLR | Coming soon | `sudis-iclr-rebuttal-with-me` | Public discussion, revision behavior, response limits and chair-facing workflow |
+| KDD | Coming soon | `sudis-kdd-rebuttal-with-me` | Per-review rebuttal structure, tables, discussion and KDD-specific escalation |
+| WWW | Coming soon | `sudis-www-rebuttal-with-me` | WWW review response, reviewer discussion and current committee contact rules |
+| CVPR | Coming soon | `sudis-cvpr-rebuttal-with-me` | CVPR response limits, formatting and reviewer/AC follow-up |
+
+“Coming soon” entries are placeholders, not installable skills. Do not apply their names or assumed limits to a live case.
+
+## How to use the skill family
+
+### Choose the entry point
+
+Use the general entry when the venue has no overlay yet, or when you need venue-agnostic analysis:
+
+```text
+$sudis-rebuttal-with-me
+```
+
+Use a venue overlay when it is marked Available. The overlay always depends on the general skill:
+
+```text
+$sudis-arr-rebuttal-with-me
+```
+
+If the overlay is unavailable, install both packages from the same release. Do not mix an old general skill with a newer overlay unless the release notes explicitly allow it.
+
+### Start with the smallest input
+
+For the first turn, provide only:
+
+1. the submitted paper PDF;
+2. the raw review comments copied from OpenReview;
+3. the venue or platform name if known.
+
+Tell the skill whether you already have a raw author response, confirmed new experiments, the official cycle rules, a deadline, or mentor instructions. It will read the paper and reviews first, then ask interactive follow-up questions only for missing facts that change the next action.
+
+### Let the skill progress through gates
+
+The normal sequence is:
+
+1. `triage`: paper/review understanding and missing-input checklist;
+2. `strategy`: atomic issue board, reviewer lanes, outlook, evidence queue and stop conditions;
+3. `draft`: Chinese strategy plus English reviewer-facing draft;
+4. `paste-ready`: confirmed Markdown, tables, facts and approvals;
+5. `follow-up`: delta replies, AC summary, issue report or chair-facing message.
+
+Do not ask for a paste-ready response in the first turn. It will be blocked until rules, evidence and approvals are sufficient.
+
+### Keep venue overlays incremental
+
+For a specialized case, use the general files for the case ledger and the overlay files for venue constraints. For ARR, the important additional artifacts are `ARR_THREAD_PLAN.md`, `ARR_ISSUE_REPORT.md`, `AC_SUMMARY.md` and `AC_MESSAGE.md`. The same pattern will be used for future NeurIPS, KDD, WWW, ICML, ICLR and CVPR overlays.
 
 ## First use
 
