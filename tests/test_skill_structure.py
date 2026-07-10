@@ -75,6 +75,8 @@ class SkillStructureTests(unittest.TestCase):
             self.assertIn(venue, text)
         self.assertIn("Coming soon", text)
         self.assertIn("skills/sudis-arr-rebuttal-with-me/SKILL.md", text)
+        self.assertNotIn("Venue and cycle: NeurIPS 2026, Main Track", text)
+        self.assertIn("URL-only intake is triage-only", text)
 
 
 if __name__ == "__main__":

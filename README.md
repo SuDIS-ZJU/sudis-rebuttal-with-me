@@ -33,7 +33,7 @@ To remove only the links created by this installer:
 bash scripts/install.sh --uninstall
 ```
 
-The release page provides directly downloadable packages: [Download v0.2.3](https://github.com/SuDIS-ZJU/sudis-rebuttal-with-me/releases/tag/v0.2.3). Import both `sudis-rebuttal-with-me.skill` and `sudis-arr-rebuttal-with-me.skill` when using the independent ARR entry. The ARR overlay depends on the general skill.
+The release page provides directly downloadable packages: [Download v0.2.4](https://github.com/SuDIS-ZJU/sudis-rebuttal-with-me/releases/tag/v0.2.4). Import both `sudis-rebuttal-with-me.skill` and `sudis-arr-rebuttal-with-me.skill` when using the independent ARR entry. The ARR overlay depends on the general skill.
 
 ## Venue-specific skill family
 
@@ -74,10 +74,12 @@ If the overlay is unavailable, install both packages from the same release. Do n
 For the first turn, provide only:
 
 1. the submitted paper PDF;
-2. the raw review comments copied from OpenReview;
+2. the complete raw review comments copied from OpenReview or saved in `REVIEWS_INPUT.md`;
 3. the venue or platform name if known.
 
-Tell the skill whether you already have a raw author response, confirmed new experiments, the official cycle rules, a deadline, or mentor instructions. It will read the paper and reviews first, then ask interactive follow-up questions only for missing facts that change the next action.
+Tell the skill whether you already have a raw author response, confirmed new experiments, official cycle rules, a deadline, or mentor instructions. These are optional at the first turn. The skill reads the paper and reviews first, then asks only for missing facts that change the next action.
+
+An OpenReview URL is reference-only. URL-only intake is triage-only because scraping can lose comment order, visibility, timestamps, revisions, or authentication context.
 
 ### Let the skill progress through gates
 
@@ -94,40 +96,6 @@ Do not ask for a paste-ready response in the first turn. It will be blocked unti
 ### Keep venue overlays incremental
 
 For a specialized case, use the general files for the case ledger and the overlay files for venue constraints. For ARR, the important additional artifacts are `ARR_THREAD_PLAN.md`, `ARR_ISSUE_REPORT.md`, `AC_SUMMARY.md` and `AC_MESSAGE.md`. The same pattern will be used for future NeurIPS, KDD, WWW, ICML, ICLR and CVPR overlays.
-
-## First use
-
-Invoke the skill explicitly:
-
-```text
-$sudis-rebuttal-with-me
-```
-
-For an ARR case, use the specialized incremental entry:
-
-```text
-$sudis-arr-rebuttal-with-me
-```
-
-The ARR entry first applies the general workflow, then adds current ARR rules, ARR issue-report handling, discussion-budget planning, and ARR-specific sample patterns. Future venue overlays will follow the same design.
-
-Then provide the case inputs:
-
-```text
-Venue and cycle: NeurIPS 2026, Main Track
-Current stage: initial review / rebuttal / discussion / follow-up
-Deadline and timezone: ...
-Paper: attach the submitted PDF or provide the local path
-Reviews: paste the raw reviews, preserving reviewer IDs and scores
-Rules: provide the official author/rebuttal page if already known
-Confirmed evidence: completed experiments, tables, citations, and approved commitments
-Advisor policy: what requires mentor approval
-Output requested: analysis, strategy, draft, or follow-up
-```
-
-For ARR, also provide the cycle email or OpenReview form if it specifies a response limit, the current response count per reviewer thread, and whether this is a resubmission.
-
-If the paper, reviews, venue rules, timeline, or evidence are missing, the skill performs triage only. It will not produce a final acceptance probability or paste-ready response from incomplete inputs.
 
 ## Recommended workflow
 
@@ -157,8 +125,6 @@ REVIEWS_INPUT.md
 The current official venue rules are recorded with URL and fetch date. This matters because limits, links, new-result policies, discussion windows, and issue-report mechanisms change by venue and cycle.
 
 For ARR, record `venue.profile = "arr"`. The overlay requires text-only mode, links disabled, direct minor add-ons only, and an explicit limit status. It does not guess a permanent ARR character limit when the current cycle does not state one.
-
-OpenReview URLs are optional references, not the preferred intake source. Copy the complete raw reviews into `REVIEWS_INPUT.md` or paste them directly into the conversation. URL-only cases are triage-only because scraping can lose comment order, visibility, timestamps, revisions, or authentication context.
 
 Initialize a case manually when useful:
 
