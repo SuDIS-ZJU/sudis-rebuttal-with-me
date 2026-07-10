@@ -23,6 +23,7 @@ class CaseToolTests(unittest.TestCase):
 
             self.assertTrue((case_dir / "CASE_STATE.json").exists())
             self.assertTrue((case_dir / "ISSUE_BOARD.md").exists())
+            self.assertTrue((case_dir / "REVIEWER_LANES.md").exists())
             self.assertTrue((case_dir / "EVIDENCE_LEDGER.md").exists())
             state = json.loads((case_dir / "CASE_STATE.json").read_text())
             self.assertEqual(state["schema_version"], "1.0")
@@ -62,7 +63,7 @@ class CaseToolTests(unittest.TestCase):
                         "limit_value": 5000,
                         "links_allowed": False,
                     },
-                    "reviewers": [{"id": "R1"}],
+                    "reviewers": [{"id": "R1", "lane": "positive-champion", "support": "high", "persuadability": "medium", "decision_relevance": "high", "addressability": "existing_evidence"}],
                     "issues": [
                         {
                             "id": "R1-C1",
@@ -70,6 +71,7 @@ class CaseToolTests(unittest.TestCase):
                             "status": "answered",
                             "evidence_ids": ["E1"],
                             "commitment_ids": [],
+                            "stance_signal": "positive",
                         }
                     ],
                     "evidence": [{"id": "E1", "status": "unverified"}],
@@ -93,6 +95,24 @@ class CaseToolTests(unittest.TestCase):
             self.assertIn("em dash", joined)
             self.assertIn("fact approval", joined)
 
+    def test_paste_ready_gate_blocks_placeholders(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            case_dir = Path(tmp) / "case"
+            initialize_case(case_dir)
+            state_path = case_dir / "CASE_STATE.json"
+            state = json.loads(state_path.read_text())
+            state.update({
+                "venue": {"rules_url": "https://example.org/rules", "rules_fetched_at": "2026-07-10", "links_allowed": True},
+                "reviewers": [{"id": "R1", "lane": "positive-champion", "support": "high", "persuadability": "medium", "decision_relevance": "high", "addressability": "existing_evidence"}],
+                "issues": [{"id": "R1-C1", "reviewer_id": "R1", "status": "answered", "stance_signal": "positive", "evidence_ids": [], "commitment_ids": []}],
+                "approvals": {"strategy": "approved", "facts": "approved", "paste_ready": "approved", "escalation": "not_requested"},
+            })
+            state_path.write_text(json.dumps(state, ensure_ascii=False, indent=2))
+            (case_dir / "DRAFT.md").write_text("R1-C1: confirmed.\n")
+            (case_dir / "PASTE_READY.txt").write_text("TODO: add the confirmed result.\n")
+            errors = validate_case(case_dir, "paste-ready")
+            self.assertIn("unresolved placeholder", " ".join(errors))
+
     def test_complete_draft_passes_draft_gate_but_escalation_requires_mentor(self):
         with tempfile.TemporaryDirectory() as tmp:
             case_dir = Path(tmp) / "case"
@@ -110,7 +130,7 @@ class CaseToolTests(unittest.TestCase):
                         "limit_value": 5000,
                         "links_allowed": True,
                     },
-                    "reviewers": [{"id": "R1"}],
+                    "reviewers": [{"id": "R1", "lane": "positive-champion", "support": "high", "persuadability": "medium", "decision_relevance": "high", "addressability": "existing_evidence"}],
                     "issues": [
                         {
                             "id": "R1-C1",
@@ -118,6 +138,7 @@ class CaseToolTests(unittest.TestCase):
                             "status": "answered",
                             "evidence_ids": ["E1"],
                             "commitment_ids": [],
+                            "stance_signal": "positive",
                         }
                     ],
                     "evidence": [{"id": "E1", "status": "author_confirmed"}],
@@ -156,7 +177,7 @@ class CaseToolTests(unittest.TestCase):
                         "limit_value": 100,
                         "links_allowed": True,
                     },
-                    "reviewers": [{"id": "R1"}],
+                    "reviewers": [{"id": "R1", "lane": "positive-champion", "support": "high", "persuadability": "medium", "decision_relevance": "high", "addressability": "existing_evidence"}],
                     "issues": [
                         {
                             "id": "R1-C1",
@@ -164,6 +185,7 @@ class CaseToolTests(unittest.TestCase):
                             "status": "answered",
                             "evidence_ids": [],
                             "commitment_ids": [],
+                            "stance_signal": "positive",
                         }
                     ],
                     "approvals": {

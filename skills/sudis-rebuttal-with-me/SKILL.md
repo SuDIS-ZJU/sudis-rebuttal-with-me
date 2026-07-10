@@ -37,7 +37,7 @@ Use `quick` mode only for triage. Do not provide a final probability, final stra
 ## Phase 0: intake and case state
 
 1. Locate the paper source, all raw reviews, reviewer metadata, existing author responses, venue/cycle, deadline, response mode, and author-confirmed results.
-2. Create or resume a structured case directory with `python <skill-root>/scripts/case_tool.py init --case-dir <path>`.
+2. Create or resume a structured case directory with `python <skill-root>/scripts/case_tool.py init --case-dir <path>`. Complete `REVIEWER_LANES.md` before strategy approval; keep reviewer-level lane separate from each issue's `stance_signal`.
 3. Preserve raw review text verbatim outside the generated summaries. Assign stable reviewer and issue IDs.
 4. Fetch the current official venue rule page when network access is available. Store URL, fetch date, relevant rule excerpts, character or word limit, links policy, new-result policy, revision policy, discussion windows, issue-report mechanism, and intended readers.
 5. If a rule is user-provided, label it `user_provided` and do not silently merge it with remembered rules.

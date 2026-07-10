@@ -18,6 +18,7 @@ from typing import Any
 ARTIFACT_TEMPLATES = {
     "RULES_SNAPSHOT.md": "# Rules Snapshot\n\nRecord the official venue rules, URL, fetch date, and relevant excerpts.\n",
     "ISSUE_BOARD.md": "# Issue Board\n\nRecord one atomic issue per row and link it to evidence and commitments.\n",
+    "REVIEWER_LANES.md": "# Reviewer Lanes\n\nRecord exactly one current lane per reviewer and preserve issue-level stance separately.\n",
     "EVIDENCE_LEDGER.md": "# Evidence Ledger\n\nRecord the source and confirmation status of every factual claim.\n",
     "STRATEGY.md": "# Strategy\n\nState the structured expert outlook, priorities, risks, and approval status.\n",
     "DRAFT.md": "# Draft\n\nKeep reviewer-facing text here until facts and commitments are confirmed.\n",
@@ -54,6 +55,18 @@ DEFAULT_STATE: dict[str, Any] = {
         "escalation": "not_requested",
     },
 }
+
+LANES = {
+    "positive-champion",
+    "positive-conditional",
+    "mixed-swing",
+    "negative-addressable",
+    "negative-fundamental",
+    "negative-procedural-risk",
+    "unknown-insufficient",
+}
+SCALE_DIMENSIONS = {"high", "medium", "low", "unknown"}
+ADDRESSABILITY = {"existing_evidence", "small_add_on", "paper_revision", "unsupported_now", "unknown"}
 
 
 def _write_json(path: Path, value: Any) -> None:
@@ -113,6 +126,18 @@ def _issue_errors(state: dict[str, Any]) -> list[str]:
     if not issues:
         errors.append("no atomic reviewer issues are tracked")
     reviewer_ids = {r.get("id") for r in reviewers if isinstance(r, dict)}
+    for reviewer in reviewers:
+        if not isinstance(reviewer, dict):
+            errors.append("a reviewer record is not an object")
+            continue
+        reviewer_id = reviewer.get("id", "<unnamed reviewer>")
+        if reviewer.get("lane") not in LANES:
+            errors.append(f"{reviewer_id} has no valid reviewer lane")
+        for dimension in ("support", "persuadability", "decision_relevance"):
+            if reviewer.get(dimension) not in SCALE_DIMENSIONS:
+                errors.append(f"{reviewer_id} has no valid {dimension} dimension")
+        if reviewer.get("addressability") not in ADDRESSABILITY:
+            errors.append(f"{reviewer_id} has no valid addressability dimension")
     for issue in issues:
         if not isinstance(issue, dict):
             errors.append("an issue record is not an object")
@@ -122,6 +147,8 @@ def _issue_errors(state: dict[str, Any]) -> list[str]:
             errors.append(f"{issue_id} references an unknown reviewer")
         if not issue.get("status"):
             errors.append(f"{issue_id} has no status")
+        if issue.get("stance_signal") not in {"positive", "mixed", "negative", "unknown"}:
+            errors.append(f"{issue_id} has no valid stance_signal")
     return errors
 
 
@@ -134,6 +161,8 @@ def _text_errors(path: Path, venue: dict[str, Any], label: str) -> list[str]:
         errors.append("external links are not allowed")
     if "—" in text or "---" in text:
         errors.append("em dash or triple-hyphen punctuation is not allowed in English draft text")
+    if re.search(r"\b(?:TODO|TBD|FIXME|<[^>]+>)\b", text, re.I):
+        errors.append("unresolved placeholder text is not allowed")
     limit = venue.get("limit_value")
     unit = venue.get("limit_unit")
     if isinstance(limit, int) and unit in {"chars", "words"}:
@@ -146,6 +175,8 @@ def _draft_errors(case_dir: Path, state: dict[str, Any]) -> list[str]:
     errors: list[str] = []
     errors.extend(_venue_rules_errors(state))
     errors.extend(_issue_errors(state))
+    if (state.get("approvals") or {}).get("strategy") != "approved":
+        errors.append("strategy approval is required before drafting")
     if not (Path(case_dir) / "DRAFT.md").exists():
         errors.append("DRAFT.md is missing")
 
