@@ -20,7 +20,7 @@ When several reviewers raise overlapping concerns, map the common answer to each
 
 ## Pattern E: constructive discussion follow-up
 
-After a reviewer sees an initial response, ask at most one focused question about a genuinely unresolved point. A useful follow-up requests the remaining technical concern, not a score change. If there is no new information, stop.
+Only during the author-visible discussion phase, after a reviewer sees an initial response, ask at most one focused question about a genuinely unresolved point. A useful follow-up requests the remaining technical concern, not a score change. If there is no new information, stop.
 
 ## Pattern F: factual AC record
 

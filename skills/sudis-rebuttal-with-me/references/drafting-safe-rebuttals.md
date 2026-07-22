@@ -159,4 +159,4 @@ python3 skills/sudis-rebuttal-with-me/scripts/case_tool.py check --case-dir PATH
 - 没有 `TODO`、占位符、未授权 concession、互相冲突的 reviewer-specific 说法或超过 scope 的新主张。
 - 字符/字数、格式、链接、附件、匿名性和新结果政策均符合当前规则快照。
 - 英文无 em dash 和 triple hyphen；语气坚定、具体、可核验，不暗示 reviewer 动机，也不请求不被规则允许的加分或重评。
-- 复制到 OpenReview 前保留内部 `DRAFT.md` 和最终 `PASTE_READY.txt`，记录事实审批人和时间，便于后续 follow-up 使用同一套事实。
+- 复制到 OpenReview 前保留内部 `DRAFT.md` 和最终 `PASTE_READY.md`，记录事实审批人和时间，便于后续 follow-up 使用同一套事实。Per-review venue overlays may instead use a `PASTE_READY.md` manifest plus directly pasteable response files.

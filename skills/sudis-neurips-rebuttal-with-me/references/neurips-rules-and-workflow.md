@@ -41,7 +41,7 @@ Record exact local deadline, source URL, and timezone. The 2026 dates page lists
 
 ## Initial meta-review map
 
-The initial meta-review may identify critical concerns, distinguish them from non-critical suggestions, and make the subsequent decision process more focused. Map every critical concern to one or more atomic issues and one or more response files. If a reviewer requests an experiment that the initial meta-review does not treat as decision-relevant, answer the bounded question but do not let it displace a critical concern.
+The initial meta-review may identify critical concerns, distinguish them from non-critical suggestions, and make the subsequent decision process more focused. Map every critical concern to one or more atomic issues and one or more response files. If it is missing when the cycle should have supplied it, remain in provisional triage. If a reviewer requests an experiment that the initial meta-review does not treat as decision-relevant, answer the bounded question but do not let it displace a critical concern. Every reviewer concern must still be marked answered, deferred with a reason, or outside the submitted claim boundary.
 
 ## Contribution-type calibration
 

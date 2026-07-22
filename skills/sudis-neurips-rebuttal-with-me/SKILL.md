@@ -21,7 +21,7 @@ Never turn a historical sample or generic advice into a current NeurIPS rule.
 
 ## Intake and profile
 
-Start with the submitted paper PDF, complete copied raw review text, and the initial meta-review, pasted directly or saved in `REVIEWS_INPUT.md`. Record score, confidence, timestamps, visibility, reviewer ID, contribution type, and the current phase. Ask only for the next missing facts: raw author response, confirmed evidence, deadline, current discussion state, and mentor policy.
+Start with the submitted paper PDF, complete copied raw review text, and the initial meta-review, pasted directly or saved in `REVIEWS_INPUT.md`. Record score, confidence, timestamps, visibility, reviewer ID, contribution type, and the current phase. If the cycle normally supplies an initial meta-review but its text is missing, provide provisional triage only; do not mark a final priority order or paste-ready response. Ask only for the next missing facts: raw author response, confirmed evidence, deadline, current discussion state, and mentor policy.
 
 An OpenReview URL alone is reference-only and remains triage-only. For a new case, run:
 
@@ -55,9 +55,9 @@ NEURIPS_RESPONSES/<reviewer-id>.md
 PASTE_READY.md  # manifest, characters, approvals, and rule snapshot
 ```
 
-Each response file must stay within the verified per-review limit. Start with one short summary, preserve compound questions as `(a)`, `(b)`, `(c)`, use compact captioned pipe tables, and explain every table immediately after it. Use only confirmed evidence.
+Each response file must stay within the verified per-review limit. Start with one short summary, preserve compound questions as `(a)`, `(b)`, `(c)`, use compact captioned pipe tables, and explain every table immediately after it. A positive reviewer without an open question receives a one- or two-sentence acknowledgement of their specific point, not a duplicated universal introduction. Use only confirmed evidence. Before posting, paste the exact file into the live OpenReview form and manually confirm the form's character count.
 
-Do not upload files, revise the paper or supplementary material, use ordinary external links, expose author identity, or ask for a score. New results must directly answer a reviewer or AC question, be author-confirmed, and be presented as clarification because the submitted paper remains the decision basis.
+Do not upload files, revise the paper or supplementary material, use ordinary external links, expose author identity, or ask for a score. Do not copy a generic “we will revise/add this in the revision” template into a NeurIPS response. Keep any later camera-ready possibility conditional, internal, and separate from the current response. New results must directly answer a reviewer or AC question, be author-confirmed, and be presented as clarification because the submitted paper remains the decision basis.
 
 If a reviewer explicitly asks for code, do not place a link in the rebuttal. Draft a separate anonymized AC-only Official Comment only after checking the current rule, anonymization, intended readers, and mentor approval.
 

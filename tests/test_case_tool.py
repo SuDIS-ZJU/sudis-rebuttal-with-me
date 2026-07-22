@@ -178,6 +178,19 @@ class CaseToolTests(unittest.TestCase):
             errors = " ".join(validate_case(case_dir, "paste-ready"))
             self.assertIn("authors cannot post responses", errors)
 
+    def test_neurips_ed_requires_an_ed_contribution_type(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            case_dir = Path(tmp) / "case"
+            initialize_case(case_dir, profile="neurips", track="evaluations_and_datasets", cycle="2026")
+            state_path = case_dir / "CASE_STATE.json"
+            state = json.loads(state_path.read_text())
+            state.update(ready_neurips_state(track="evaluations_and_datasets"))
+            state["venue"]["neurips"]["contribution_type"] = "general"
+            state_path.write_text(json.dumps(state, ensure_ascii=False, indent=2))
+
+            errors = " ".join(validate_case(case_dir, "strategy"))
+            self.assertIn("contribution_type is missing or invalid", errors)
+
     def test_strategy_gate_blocks_unknown_rules_and_untracked_issues(self):
         with tempfile.TemporaryDirectory() as tmp:
             case_dir = Path(tmp) / "case"

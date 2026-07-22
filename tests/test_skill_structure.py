@@ -84,6 +84,13 @@ class SkillStructureTests(unittest.TestCase):
             self.assertTrue((NEURIPS_SKILL / "references" / reference).exists())
         self.assertTrue((NEURIPS_SKILL / "agents" / "openai.yaml").exists())
 
+    def test_neurips_and_general_references_use_markdown_ready_artifacts(self):
+        drafting = (SKILL / "references" / "drafting-safe-rebuttals.md").read_text(encoding="utf-8")
+        neurips = (NEURIPS_SKILL / "SKILL.md").read_text(encoding="utf-8")
+        self.assertNotIn("PASTE_READY.txt", drafting)
+        self.assertIn("manually confirm the form's character count", neurips)
+        self.assertIn("positive reviewer without an open question", neurips)
+
     def test_readme_documents_venue_family_and_overlay_links(self):
         text = (ROOT / "README.md").read_text(encoding="utf-8")
         for venue in ("NeurIPS", "KDD", "WWW", "ICML", "ICLR", "CVPR"):
