@@ -1,6 +1,6 @@
 # SUDIS Rebuttal With Me
 
-`sudis-rebuttal-with-me` is a research-group skill for preparing safe, evidence-grounded rebuttals and follow-ups for ARR, ACL, EMNLP, ICML, NeurIPS, ICLR, KDD, WWW, AAAI, CVPR, and similar venues. `sudis-arr-rebuttal-with-me` is the first incremental venue overlay, specialized for ACL Rolling Review.
+`sudis-rebuttal-with-me` is a research-group skill for preparing safe, evidence-grounded rebuttals and follow-ups for ARR, ACL, EMNLP, ICML, NeurIPS, ICLR, KDD, WWW, AAAI, CVPR, and similar venues. `sudis-arr-rebuttal-with-me` and `sudis-neurips-rebuttal-with-me` are incremental venue overlays for ARR and NeurIPS.
 
 Copyright © 2026 SuDIS, Huan Li, and contributors. See [NOTICE](NOTICE) and [LICENSE](LICENSE).
 
@@ -25,7 +25,7 @@ bash scripts/install.sh --dry-run
 bash scripts/install.sh
 ```
 
-The installer links both the general skill and the ARR overlay into `~/.agents/skills/` as the source of truth, plus `~/.codex/skills/`, `~/.Codex/skills/`, and `~/.claude/skills/`. It never replaces a real file or directory.
+The installer links the general skill, ARR overlay, and NeurIPS overlay into `~/.agents/skills/` as the source of truth, plus `~/.codex/skills/`, `~/.Codex/skills/`, and `~/.claude/skills/`. It never replaces a real file or directory.
 
 To remove only the links created by this installer:
 
@@ -33,7 +33,7 @@ To remove only the links created by this installer:
 bash scripts/install.sh --uninstall
 ```
 
-The release page provides directly downloadable packages: [Download v0.2.4](https://github.com/SuDIS-ZJU/sudis-rebuttal-with-me/releases/tag/v0.2.4). Import both `sudis-rebuttal-with-me.skill` and `sudis-arr-rebuttal-with-me.skill` when using the independent ARR entry. The ARR overlay depends on the general skill.
+The [latest release](https://github.com/SuDIS-ZJU/sudis-rebuttal-with-me/releases/latest) provides directly downloadable packages. Import the general skill plus the overlay you need. Both ARR and NeurIPS overlays depend on the general skill.
 
 ## Venue-specific skill family
 
@@ -42,7 +42,7 @@ The family has one general skill and small venue overlays. The general skill own
 | Venue or platform | Status | Entry point | What the overlay will specialize |
 | --- | --- | --- | --- |
 | ACL Rolling Review (ARR), including ACL/EMNLP-style ARR workflows | Available | [`sudis-arr-rebuttal-with-me`](skills/sudis-arr-rebuttal-with-me/SKILL.md) | Text-only response, no external links, minor add-on boundary, discussion budget, review-issue reports, ARR resubmission and commitment |
-| NeurIPS | Coming soon | `sudis-neurips-rebuttal-with-me` | Cycle-specific response limits, reviewer/AC discussion, confidential communication and NeurIPS escalation rules |
+| NeurIPS Main Track and Evaluations & Datasets | Available | [`sudis-neurips-rebuttal-with-me`](skills/sudis-neurips-rebuttal-with-me/SKILL.md) | Per-review OpenReview responses, initial meta-review planning, 10,000-character checks, discussion phases, E&D contribution types and AC workflow |
 | ICML | Coming soon | `sudis-icml-rebuttal-with-me` | Per-review limits, AC comments, response format and current-cycle discussion rules |
 | ICLR | Coming soon | `sudis-iclr-rebuttal-with-me` | Public discussion, revision behavior, response limits and chair-facing workflow |
 | KDD | Coming soon | `sudis-kdd-rebuttal-with-me` | Per-review rebuttal structure, tables, discussion and KDD-specific escalation |
@@ -65,6 +65,12 @@ Use a venue overlay when it is marked Available. The overlay always depends on t
 
 ```text
 $sudis-arr-rebuttal-with-me
+```
+
+For NeurIPS Main Track or E&D:
+
+```text
+$sudis-neurips-rebuttal-with-me
 ```
 
 If the overlay is unavailable, install both packages from the same release. Do not mix an old general skill with a newer overlay unless the release notes explicitly allow it.
@@ -95,7 +101,7 @@ Do not ask for a paste-ready response in the first turn. It will be blocked unti
 
 ### Keep venue overlays incremental
 
-For a specialized case, use the general files for the case ledger and the overlay files for venue constraints. For ARR, the important additional artifacts are `ARR_THREAD_PLAN.md`, `ARR_ISSUE_REPORT.md`, `AC_SUMMARY.md` and `AC_MESSAGE.md`. The same pattern will be used for future NeurIPS, KDD, WWW, ICML, ICLR and CVPR overlays.
+For a specialized case, use the general files for the case ledger and the overlay files for venue constraints. ARR adds `ARR_THREAD_PLAN.md` and `ARR_ISSUE_REPORT.md`. NeurIPS adds `NEURIPS_META_REVIEW_MAP.md`, `NEURIPS_THREAD_PLAN.md`, and one directly pasteable Markdown file per reviewer under `NEURIPS_RESPONSES/`. Both reuse `AC_SUMMARY.md` and `AC_MESSAGE.md`.
 
 ## Recommended workflow
 
@@ -116,6 +122,9 @@ REVISION_PLAN.md
 FOLLOWUP_LOG.md
 ARR_THREAD_PLAN.md
 ARR_ISSUE_REPORT.md
+NEURIPS_META_REVIEW_MAP.md
+NEURIPS_THREAD_PLAN.md
+NEURIPS_RESPONSES/
 AC_SUMMARY.md
 AC_MESSAGE.md
 CASE_INTAKE.md
@@ -126,10 +135,20 @@ The current official venue rules are recorded with URL and fetch date. This matt
 
 For ARR, record `venue.profile = "arr"`. The overlay requires text-only mode, links disabled, direct minor add-ons only, and an explicit limit status. It does not guess a permanent ARR character limit when the current cycle does not state one.
 
+For NeurIPS 2026, create a profile-aware workspace. The Main Track value is `main`; the E&D value is `evaluations_and_datasets`:
+
+```bash
+python3 skills/sudis-rebuttal-with-me/scripts/case_tool.py \
+  init --case-dir ./cases/neurips-2026-main \
+  --profile neurips --track main --cycle 2026
+```
+
+The overlay blocks final drafting for a future cycle before an official profile exists. In particular, it does not silently apply 2026's per-review limit to NeurIPS 2027.
+
 Initialize a case manually when useful:
 
 ```bash
-python skills/sudis-rebuttal-with-me/scripts/case_tool.py \
+python3 skills/sudis-rebuttal-with-me/scripts/case_tool.py \
   init --case-dir ./cases/paper-2026
 ```
 
@@ -187,10 +206,10 @@ For detailed formatting rules, see [`openreview-markdown.md`](skills/sudis-rebut
 Run the gates before showing text as ready:
 
 ```bash
-python skills/sudis-rebuttal-with-me/scripts/case_tool.py \
+python3 skills/sudis-rebuttal-with-me/scripts/case_tool.py \
   check --case-dir ./cases/paper-2026 --gate draft
 
-python skills/sudis-rebuttal-with-me/scripts/case_tool.py \
+python3 skills/sudis-rebuttal-with-me/scripts/case_tool.py \
   check --case-dir ./cases/paper-2026 --gate paste-ready
 ```
 
@@ -214,6 +233,15 @@ Silence is not evidence of misconduct. Do not send repeated reminders, pressure 
 - Keep `ARR_ISSUE_REPORT.md` separate from the scientific response and use the official issue type when applicable.
 - After the meta-review, compare commitment, revise-and-resubmit, same-reviewer, new-reviewer, and direct-submission options separately.
 
+### NeurIPS-specific workflow tips
+
+- The NeurIPS overlay currently supports the verified 2026 Main Track and E&D profiles. A future cycle, including 2027 before official rules are published, remains triage-only.
+- Paste the initial meta-review together with raw reviews. The skill maps its critical concerns to each reviewer response before drafting.
+- NeurIPS 2026 uses one OpenReview rebuttal per review, each limited to 10,000 characters. `NEURIPS_RESPONSES/R1.md` and similar files are the copy targets; `PASTE_READY.md` is their audit manifest.
+- Do not use links or upload files in the ordinary response. New results must directly answer a question and be author-confirmed; the submitted paper remains the decision basis.
+- Follow the visibility phases: initial response, author-reviewer-AC discussion, then reviewer-AC-only discussion. Once authors lose visibility, do not prepare another ordinary reply.
+- E&D cases must also state the selected contribution type and separately track applicable Croissant, RAI metadata, dataset-access, code-access, anonymity, and ethics issues.
+
 ## Practical tips
 
 - Paste the raw review text exactly before summarizing it.
@@ -234,8 +262,8 @@ The skill will block or qualify actions when current venue rules are unknown, fa
 ## Development and validation
 
 ```bash
-python -m unittest discover -s tests -v
-python skills/sudis-rebuttal-with-me/scripts/case_tool.py --help
+python3 -m unittest discover -s tests -v
+python3 skills/sudis-rebuttal-with-me/scripts/case_tool.py --help
 ```
 
 See [`AGENTS.md`](AGENTS.md) before changing the workflow, checker, references, or release process.

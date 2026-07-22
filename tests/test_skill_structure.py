@@ -8,6 +8,7 @@ from pathlib import Path
 ROOT = Path(__file__).parents[1]
 SKILL = ROOT / "skills" / "sudis-rebuttal-with-me"
 ARR_SKILL = ROOT / "skills" / "sudis-arr-rebuttal-with-me"
+NEURIPS_SKILL = ROOT / "skills" / "sudis-neurips-rebuttal-with-me"
 
 
 class SkillStructureTests(unittest.TestCase):
@@ -69,12 +70,27 @@ class SkillStructureTests(unittest.TestCase):
         self.assertIn("arr-case-patterns.md", text)
         self.assertTrue((ARR_SKILL / "agents" / "openai.yaml").exists())
 
-    def test_readme_documents_venue_family_and_arr_link(self):
+    def test_neurips_overlay_is_independently_triggerable_and_incremental(self):
+        text = (NEURIPS_SKILL / "SKILL.md").read_text(encoding="utf-8")
+        self.assertLessEqual(len(text.splitlines()), 500)
+        self.assertTrue(text.startswith("---\nname: sudis-neurips-rebuttal-with-me\n"))
+        self.assertIn("sudis-rebuttal-with-me", text)
+        for reference in (
+            "neurips-rules-and-workflow.md",
+            "neurips-ed-track.md",
+            "neurips-case-patterns.md",
+        ):
+            self.assertIn(reference, text)
+            self.assertTrue((NEURIPS_SKILL / "references" / reference).exists())
+        self.assertTrue((NEURIPS_SKILL / "agents" / "openai.yaml").exists())
+
+    def test_readme_documents_venue_family_and_overlay_links(self):
         text = (ROOT / "README.md").read_text(encoding="utf-8")
         for venue in ("NeurIPS", "KDD", "WWW", "ICML", "ICLR", "CVPR"):
             self.assertIn(venue, text)
         self.assertIn("Coming soon", text)
         self.assertIn("skills/sudis-arr-rebuttal-with-me/SKILL.md", text)
+        self.assertIn("skills/sudis-neurips-rebuttal-with-me/SKILL.md", text)
         self.assertNotIn("Venue and cycle: NeurIPS 2026, Main Track", text)
         self.assertIn("URL-only intake is triage-only", text)
 

@@ -28,7 +28,7 @@ Determine the requested stage before reading large references:
 | User need | Read next | Main output |
 | --- | --- | --- |
 | Initial analysis, probability, experiment priority | `references/intake-and-venue-rules.md`, `references/strategy-and-reviewer-modeling.md`, `references/evidence-and-experiment-priorities.md` | `CASE_STATE.json`, `RULES_SNAPSHOT.md`, `ISSUE_BOARD.md`, `STRATEGY.md`, with separate positive and negative reviewer lanes |
-| English author response | `references/drafting-safe-rebuttals.md`, `references/openreview-markdown.md`, and the approved `STRATEGY.md` | `DRAFT.md`, then canonical `PASTE_READY.md` only after gates pass |
+| English author response | `references/drafting-safe-rebuttals.md`, `references/openreview-markdown.md`, and the approved `STRATEGY.md` | `DRAFT.md`, then `PASTE_READY.md` or a venue-specific ready-to-paste artifact set only after gates pass |
 | New reviewer comment or discussion | `references/followup-and-escalation.md` and the existing case state | `FOLLOWUP_LOG.md`, delta reply, updated `REVISION_PLAN.md` |
 | AC/SAC/PC session summary or letter | `references/followup-and-escalation.md`, `references/ac-summary-and-letter.md`, and the case ledger | `AC_SUMMARY.md`, `AC_MESSAGE.md`, or a mentor-gated issue report |
 | Incomplete or urgent triage | Read only the intake reference | Missing-input list and blocked actions |
@@ -39,7 +39,7 @@ Use `quick` mode only for triage. Do not provide a final probability, final stra
 
 Start with only the paper PDF and raw OpenReview review text. Ask whether the student already has a raw response, confirmed new results, a venue rule snapshot, and a timeline. Do not demand every metadata field before reading the material.
 
-1. Create or resume a case directory with `python <skill-root>/scripts/case_tool.py init --case-dir <path>`. Use `CASE_INTAKE.md` and `REVIEWS_INPUT.md` when the student prefers a local file.
+1. Create or resume a case directory with `python3 <skill-root>/scripts/case_tool.py init --case-dir <path>`. Use `CASE_INTAKE.md` and `REVIEWS_INPUT.md` when the student prefers a local file.
 2. Preserve raw review text verbatim and assign stable reviewer and issue IDs.
 3. After reading the PDF and reviews, return a short triage plus a missing-input checklist. Ask only for information that changes the next decision: venue/cycle, deadline, official rules, author response, evidence status, or mentor policy.
 4. Fetch current official rules when a final draft or escalation is requested. Record URL, fetch date, limits, links, new-results policy, discussion window, issue mechanism, and intended readers.
@@ -74,15 +74,15 @@ Before drafting, ask the student to approve the strategy and identify which comm
 
 Load `references/drafting-safe-rebuttals.md`. Draft in English, but explain strategy and unresolved risks in Chinese unless the student requests otherwise.
 
-Keep `DRAFT.md` separate from `PASTE_READY.md`. Every factual sentence must point to a confirmed evidence ID. Every paper-edit promise must point to an approved commitment and an item in `REVISION_PLAN.md`.
+Keep `DRAFT.md` separate from the final ready-to-paste artifact. `PASTE_READY.md` is canonical for a single-response venue; an overlay may define a per-review artifact set and a `PASTE_READY.md` manifest. Every factual sentence must point to a confirmed evidence ID. Every paper-edit promise must point to an approved commitment and an item in `REVISION_PLAN.md`.
 
 Render the final response according to `references/openreview-markdown.md`: use question headings, `(a)/(b)/(c)` subpoints for compound questions, compact pipe tables with captions, and no raw HTML or unexplained wide tables. `PASTE_READY.md` is the canonical artifact; do not call `PASTE_READY.txt` ready unless the Markdown file also passes.
 
 Resolve `scripts/case_tool.py` relative to this skill directory, not the student's case directory. Run the deterministic checker before presenting paste-ready text:
 
 ```bash
-python <skill-root>/scripts/case_tool.py check --case-dir <path> --gate draft
-python <skill-root>/scripts/case_tool.py check --case-dir <path> --gate paste-ready
+python3 <skill-root>/scripts/case_tool.py check --case-dir <path> --gate draft
+python3 <skill-root>/scripts/case_tool.py check --case-dir <path> --gate paste-ready
 ```
 
 If either gate fails, show the blocking errors and ask only for the missing evidence or approval. Do not fill the gap with plausible wording.
@@ -98,7 +98,7 @@ Use the least escalatory venue-compliant channel that can resolve the problem. A
 Before any reminder that asks for attention, any score-related language, or any chair-facing text, obtain mentor approval and record it in `CASE_STATE.json`. Run:
 
 ```bash
-python <skill-root>/scripts/case_tool.py check --case-dir <path> --gate escalation
+python3 <skill-root>/scripts/case_tool.py check --case-dir <path> --gate escalation
 ```
 
 ## Required final response shape

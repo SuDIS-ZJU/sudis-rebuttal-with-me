@@ -2,7 +2,7 @@
 set -euo pipefail
 
 ROOT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)
-SKILL_NAMES=(sudis-rebuttal-with-me sudis-arr-rebuttal-with-me)
+SKILL_NAMES=(sudis-rebuttal-with-me sudis-arr-rebuttal-with-me sudis-neurips-rebuttal-with-me)
 UNIFIED_DIR="${SUDIS_SKILLS_DIR:-$HOME/.agents/skills}"
 DRY_RUN=0
 

@@ -15,6 +15,71 @@ from case_tool import (  # noqa: E402
 )
 
 
+def ready_neurips_state(track="main", phase="initial_response", reviewers=None):
+    reviewers = reviewers or ["R1"]
+    profile_id = "neurips-2026-ed" if track == "evaluations_and_datasets" else "neurips-2026-main"
+    reviewer_records = [
+        {
+            "id": reviewer_id,
+            "lane": "positive-conditional",
+            "support": "high",
+            "persuadability": "high",
+            "decision_relevance": "high",
+            "addressability": "existing_evidence",
+        }
+        for reviewer_id in reviewers
+    ]
+    issues = [
+        {
+            "id": f"{reviewer_id}-C1",
+            "reviewer_id": reviewer_id,
+            "status": "answered",
+            "stance_signal": "positive",
+            "evidence_ids": ["E1"],
+            "commitment_ids": [],
+        }
+        for reviewer_id in reviewers
+    ]
+    return {
+        "intake_mode": "local_markdown",
+        "paper_status": "provided",
+        "raw_review_status": "confirmed",
+        "venue": {
+            "name": "NeurIPS",
+            "cycle": "2026",
+            "track": track,
+            "profile": "neurips",
+            "rules_url": "https://neurips.cc/Conferences/2026/MainTrackHandbook",
+            "rules_fetched_at": "2026-07-22",
+            "rules_profile_id": profile_id,
+            "rules_status": "current_official",
+            "response_mode": "per_review_openreview",
+            "limit_scope": "per_review",
+            "limit_unit": "chars",
+            "limit_value": 10000,
+            "links_allowed": False,
+            "files_allowed": False,
+            "paper_revision_allowed": False,
+            "new_results_policy": "direct_response_allowed_submission_remains_basis",
+            "neurips": {
+                "phase": phase,
+                "initial_meta_review_status": "provided",
+                "contribution_type": "datasets_and_data_resources" if track == "evaluations_and_datasets" else "general",
+                "response_files": {reviewer_id: f"NEURIPS_RESPONSES/{reviewer_id}.md" for reviewer_id in reviewers},
+            },
+        },
+        "reviewers": reviewer_records,
+        "issues": issues,
+        "evidence": [{"id": "E1", "status": "author_confirmed", "origin": "paper"}],
+        "approvals": {
+            "strategy": "approved",
+            "facts": "approved",
+            "paste_ready": "approved",
+            "escalation": "not_requested",
+        },
+    }
+
+
 class CaseToolTests(unittest.TestCase):
     def test_initialize_case_creates_state_and_human_artifacts(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -35,6 +100,83 @@ class CaseToolTests(unittest.TestCase):
             state = json.loads((case_dir / "CASE_STATE.json").read_text())
             self.assertEqual(state["schema_version"], "1.0")
             self.assertEqual(state["stage"], "intake")
+
+    def test_neurips_initialization_is_profile_specific(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            case_dir = Path(tmp) / "case"
+            initialize_case(case_dir, profile="neurips", track="main", cycle="2026")
+
+            self.assertTrue((case_dir / "NEURIPS_META_REVIEW_MAP.md").exists())
+            self.assertTrue((case_dir / "NEURIPS_THREAD_PLAN.md").exists())
+            self.assertTrue((case_dir / "NEURIPS_RESPONSES").is_dir())
+            self.assertFalse((case_dir / "ARR_THREAD_PLAN.md").exists())
+            state = json.loads((case_dir / "CASE_STATE.json").read_text())
+            self.assertEqual(state["venue"]["profile"], "neurips")
+            self.assertEqual(state["venue"]["track"], "main")
+
+    def test_neurips_future_cycle_is_triage_only(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            case_dir = Path(tmp) / "case"
+            initialize_case(case_dir, profile="neurips", track="main", cycle="2027")
+            state_path = case_dir / "CASE_STATE.json"
+            state = json.loads(state_path.read_text())
+            state.update(ready_neurips_state())
+            state["venue"].update({
+                "cycle": "2027",
+                "rules_profile_id": "",
+                "rules_status": "future_unpublished",
+            })
+            state_path.write_text(json.dumps(state, ensure_ascii=False, indent=2))
+            errors = validate_case(case_dir, "strategy")
+            self.assertIn("NeurIPS future rules are unpublished; triage only", errors)
+
+    def test_neurips_paste_ready_counts_each_reviewer_independently(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            case_dir = Path(tmp) / "case"
+            initialize_case(case_dir, profile="neurips", track="main", cycle="2026")
+            state_path = case_dir / "CASE_STATE.json"
+            state = json.loads(state_path.read_text())
+            state.update(ready_neurips_state(reviewers=["R1", "R2"]))
+            state_path.write_text(json.dumps(state, ensure_ascii=False, indent=2))
+            (case_dir / "DRAFT.md").write_text("Reviewed draft.\n")
+            for reviewer_id in ("R1", "R2"):
+                (case_dir / "NEURIPS_RESPONSES" / f"{reviewer_id}.md").write_text("a" * 9000)
+            (case_dir / "PASTE_READY.md").write_text("R1: 9000 chars\nR2: 9000 chars\n")
+
+            self.assertEqual(validate_case(case_dir, "paste-ready"), [])
+
+    def test_neurips_paste_ready_blocks_over_limit_link_and_scope_expansion(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            case_dir = Path(tmp) / "case"
+            initialize_case(case_dir, profile="neurips", track="main", cycle="2026")
+            state_path = case_dir / "CASE_STATE.json"
+            state = json.loads(state_path.read_text())
+            state.update(ready_neurips_state())
+            state["evidence"] = [{"id": "E1", "status": "author_confirmed", "origin": "major_scope_change"}]
+            state_path.write_text(json.dumps(state, ensure_ascii=False, indent=2))
+            (case_dir / "DRAFT.md").write_text("Reviewed draft.\n")
+            (case_dir / "NEURIPS_RESPONSES" / "R1.md").write_text("https://example.org\n" + "a" * 10001)
+            (case_dir / "PASTE_READY.md").write_text("R1: pending\n")
+
+            errors = " ".join(validate_case(case_dir, "paste-ready"))
+            self.assertIn("scope-expanding NeurIPS evidence", errors)
+            self.assertIn("external links are not allowed", errors)
+            self.assertIn("exceeds the chars limit", errors)
+
+    def test_neurips_blocks_author_reply_after_author_visibility_closes(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            case_dir = Path(tmp) / "case"
+            initialize_case(case_dir, profile="neurips", track="evaluations_and_datasets", cycle="2026")
+            state_path = case_dir / "CASE_STATE.json"
+            state = json.loads(state_path.read_text())
+            state.update(ready_neurips_state(track="evaluations_and_datasets", phase="reviewer_ac_only"))
+            state_path.write_text(json.dumps(state, ensure_ascii=False, indent=2))
+            (case_dir / "DRAFT.md").write_text("Reviewed draft.\n")
+            (case_dir / "NEURIPS_RESPONSES" / "R1.md").write_text("Confirmed response.\n")
+            (case_dir / "PASTE_READY.md").write_text("R1: 19 chars\n")
+
+            errors = " ".join(validate_case(case_dir, "paste-ready"))
+            self.assertIn("authors cannot post responses", errors)
 
     def test_strategy_gate_blocks_unknown_rules_and_untracked_issues(self):
         with tempfile.TemporaryDirectory() as tmp:

@@ -95,8 +95,8 @@ Load the general skill's `references/ac-summary-and-letter.md`. Create `AC_SUMMA
 Use the general skill's checker. When `venue.profile` is `arr`, it additionally blocks missing ARR response mode, links, new-results policy, limit status, and invalid evidence origins:
 
 ```bash
-python <general-skill-root>/scripts/case_tool.py check --case-dir <case> --gate strategy
-python <general-skill-root>/scripts/case_tool.py check --case-dir <case> --gate paste-ready
+python3 <general-skill-root>/scripts/case_tool.py check --case-dir <case> --gate strategy
+python3 <general-skill-root>/scripts/case_tool.py check --case-dir <case> --gate paste-ready
 ```
 
 The checker allows evidence from the submitted paper, a direct minor add-on, or an author-confirmed clarification. It blocks unsolicited or substantial new results.

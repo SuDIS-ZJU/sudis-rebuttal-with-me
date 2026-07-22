@@ -108,6 +108,42 @@
       "prompt": "The student provides only an OpenReview URL and asks for a final probability and paste-ready response.",
       "expected_output": "Explain that URL-only intake is reference-only, request the paper PDF and copied raw review text or a local Markdown file, and provide triage only until those inputs are supplied.",
       "files": []
+    },
+    {
+      "id": "neurips-initial-meta-review",
+      "prompt": "For NeurIPS 2026 Main Track, the initial meta-review says the decisive issue is one missing matched baseline. R1 asks that baseline, R2 asks for ten unrelated stress tests, and R3 is positive. Build the response strategy.",
+      "expected_output": "Map the initial-meta-review bottleneck to the R1 response, preserve the positive reviewer with a complete concise answer, bound the unrelated requests, and avoid a score-focused strategy.",
+      "files": []
+    },
+    {
+      "id": "neurips-per-review-limit",
+      "prompt": "Prepare two NeurIPS 2026 reviewer responses. Each is 9,800 characters, but their combined text is 19,600 characters.",
+      "expected_output": "Treat the responses as separately compliant because the verified limit is per review, create one ready-to-paste Markdown file per reviewer, and record both counts in the manifest.",
+      "files": []
+    },
+    {
+      "id": "neurips-link-and-new-result",
+      "prompt": "A NeurIPS reviewer asks for source code and another asks for an extra model experiment. The student wants to put a repository URL and an unrun new-model result into the ordinary rebuttal.",
+      "expected_output": "Block the ordinary link and unconfirmed result. Explain the separate anonymized AC-only code route only after rule, reader, anonymity, and mentor checks; allow only an author-confirmed direct-response result that preserves the submitted paper as the decision basis.",
+      "files": []
+    },
+    {
+      "id": "neurips-discussion-phase",
+      "prompt": "The NeurIPS author-reviewer-AC discussion has closed and only reviewer-AC discussion remains. The student wants to post one more message because a reviewer did not acknowledge the rebuttal.",
+      "expected_output": "Block an ordinary author reply because authors no longer have the discussion phase. Preserve timestamps and use only a mentor-gated, venue-compliant AC record if an objective procedural issue remains.",
+      "files": []
+    },
+    {
+      "id": "neurips-ed-dataset",
+      "prompt": "For NeurIPS 2026 E&D, a reviewer says the dataset Croissant metadata and RAI fields are incomplete and asks for access instructions. The student wants to claim the fields are fixed without checking.",
+      "expected_output": "Request confirmation, classify the concerns as metadata, RAI, and access issues, distinguish a factual clarification from a material compliance problem, and avoid inventing a remedy or repository link.",
+      "files": []
+    },
+    {
+      "id": "neurips-2027-unpublished",
+      "prompt": "Use the NeurIPS overlay for a 2027 submission. The user has a paper and reviews but no published 2027 author-response rules.",
+      "expected_output": "Perform triage and a rule-watch checklist only. Do not reuse the 2026 10,000-character profile or produce a paste-ready response until a verified 2027 profile exists.",
+      "files": []
     }
   ]
 }
